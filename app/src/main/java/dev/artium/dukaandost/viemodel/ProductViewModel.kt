@@ -128,50 +128,73 @@ class ProductViewModel @Inject constructor(
         mSelectedFilter = filter
         mSortOption = sortOption
 
-        val productListWithFilter: List<ProductModel>
-        if (mSelectedFilter != DukaanDostConstants.FILTER_ALL_CATEGORIES) {
-            productListWithFilter = listOfProducts.filter { it.category == mSelectedFilter }
-        } else {
-            productListWithFilter = listOfProducts
-        }
+        val productListWithFilter = getFilteredList(listOfProducts, mSelectedFilter)
 
-        val productListContainsSearchTerm: List<ProductModel>
-        if (mSearchTerm.isNotBlank()) {
-            productListContainsSearchTerm = listOfProducts.filter {
-                it.title.lowercase().contains(mSearchTerm) ||
-                        it.category.lowercase().contains(mSearchTerm)
-            }
-        } else {
-            productListContainsSearchTerm = listOfProducts
-        }
+        val productListContainsSearchTerm =
+            getProductListWithSearchTerm(listOfProducts, mSearchTerm)
 
         val intersectionList =
             productListWithFilter.intersect(productListContainsSearchTerm.toSet()).toList()
 
-        val sortedIntersectionList: List<ProductModel>
-        when (mSortOption) {
-            SORT_RATING -> {
-                sortedIntersectionList = intersectionList.sortedByDescending { it.rating.rate }
-            }
-
-            SORT_PRICE_LOW_TO_HIGH -> {
-                sortedIntersectionList = intersectionList.sortedBy { it.price }
-            }
-
-            SORT_PRICE_HIGH_TO_HIGH -> {
-                sortedIntersectionList = intersectionList.sortedByDescending { it.price }
-            }
-
-            else -> {
-                sortedIntersectionList = intersectionList
-            }
-        }
-
-
+        val sortedIntersectionList = getSortedProductList(intersectionList, mSortOption)
 
         _productCategoryData.value = ProductCategoryDataModel(
             listOfProducts = sortedIntersectionList,
             listOfCategories = listOfCategories
         )
+    }
+
+    private fun getFilteredList(
+        listOfProducts: List<ProductModel>,
+        filter: String
+    ): List<ProductModel> {
+        val productListWithFilter: List<ProductModel>
+        if (filter != DukaanDostConstants.FILTER_ALL_CATEGORIES) {
+            productListWithFilter = listOfProducts.filter { it.category == mSelectedFilter }
+        } else {
+            productListWithFilter = listOfProducts
+        }
+        return productListWithFilter
+    }
+
+    private fun getProductListWithSearchTerm(
+        listOfProducts: List<ProductModel>,
+        searchTerm: String
+    ): List<ProductModel> {
+        val productListContainsSearchTerm: List<ProductModel>
+        if (searchTerm.isNotBlank()) {
+            productListContainsSearchTerm = listOfProducts.filter {
+                it.title.lowercase().contains(searchTerm) ||
+                        it.category.lowercase().contains(searchTerm)
+            }
+        } else {
+            productListContainsSearchTerm = listOfProducts
+        }
+        return productListContainsSearchTerm
+    }
+
+    private fun getSortedProductList(
+        listOfProducts: List<ProductModel>,
+        sortOption: String
+    ): List<ProductModel> {
+        val sortedIntersectionList: List<ProductModel>
+        when (sortOption) {
+            SORT_RATING -> {
+                sortedIntersectionList = listOfProducts.sortedByDescending { it.rating.rate }
+            }
+
+            SORT_PRICE_LOW_TO_HIGH -> {
+                sortedIntersectionList = listOfProducts.sortedBy { it.price }
+            }
+
+            SORT_PRICE_HIGH_TO_HIGH -> {
+                sortedIntersectionList = listOfProducts.sortedByDescending { it.price }
+            }
+
+            else -> {
+                sortedIntersectionList = listOfProducts
+            }
+        }
+        return sortedIntersectionList
     }
 }
