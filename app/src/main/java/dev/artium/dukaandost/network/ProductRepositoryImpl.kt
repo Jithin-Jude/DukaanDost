@@ -2,6 +2,7 @@ package dev.artium.dukaandost.network
 
 import dev.artium.dukaandost.domain.DataState
 import dev.artium.dukaandost.model.ProductEntityNetworkMapper
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -20,6 +21,25 @@ class ProductRepositoryImpl @Inject constructor(
                         productEntityNetworkMapper.mapFromEntity(it)
                     }
                     emit(DataState.Success(allProductList))
+                } ?: kotlin.run {
+                    emit(DataState.Error(Exception(response.message())))
+                }
+            } else {
+                emit(DataState.Error(Exception(response.message())))
+            }
+        } catch (e: Exception) {
+            emit(DataState.Error(Exception("error")))
+        }
+    }
+
+    override suspend fun getAllCategories() = flow {
+        try {
+            emit(DataState.Loading)
+            val response = productApiService.getAllCategories()
+            if (response.isSuccessful) {
+                val allCategoriesResponse = response.body()
+                allCategoriesResponse?.let { allCategories ->
+                    emit(DataState.Success(allCategories))
                 } ?: kotlin.run {
                     emit(DataState.Error(Exception(response.message())))
                 }

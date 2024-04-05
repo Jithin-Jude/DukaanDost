@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         viewModel.fetchAllProducts()
+        viewModel.fetchAllCategories()
     }
 }
 

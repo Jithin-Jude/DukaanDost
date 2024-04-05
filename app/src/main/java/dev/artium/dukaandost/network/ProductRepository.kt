@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
     suspend fun getAllProducts(): Flow<DataState<List<ProductModel>>>
+
+    suspend fun getAllCategories(): Flow<DataState<List<String>>>
 }
