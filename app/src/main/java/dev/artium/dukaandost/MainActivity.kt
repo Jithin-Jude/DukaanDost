@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.feature.HomeScreenView
 import dev.artium.dukaandost.ui.feature.ProductDetailScreenView
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
@@ -24,22 +25,39 @@ class MainActivity : ComponentActivity() {
     private val viewModel: ProductViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
-            val navController = rememberNavController()
-            DukaanDostTheme {
-                DashboardView(navController, isExpandedScreen)
-            }
-        }
-//        viewModel.fetchAllProducts()
+        setContent { }
+        observeData()
+        viewModel.fetchAllProducts()
 //        viewModel.fetchAllCategories()
     }
 
+    private fun observeData() {
+        viewModel.listOfProducts.observe(this) { productList ->
+            setContent {
+                val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
+                val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+                val navController = rememberNavController()
+                DukaanDostTheme {
+                    DashboardView(navController, isExpandedScreen, productList ?: emptyList())
+                }
+            }
+        }
+    }
+
     @Composable
-    fun DashboardView(navController: NavHostController, isExpandedScreen: Boolean) {
+    fun DashboardView(
+        navController: NavHostController,
+        isExpandedScreen: Boolean,
+        listOfProducts: List<ProductModel>
+    ) {
         NavHost(navController, startDestination = Routes.HomeScreen.route) {
-            composable(Routes.HomeScreen.route) { HomeScreenView(navController, isExpandedScreen) }
+            composable(Routes.HomeScreen.route) {
+                HomeScreenView(
+                    navController,
+                    isExpandedScreen,
+                    listOfProducts
+                )
+            }
             composable(Routes.ProductDetailScreen.route + "/{product_id}") { navBackStack ->
                 val selectedProductId = navBackStack.arguments?.getString("product_id")
                 selectedProductId?.let { id ->

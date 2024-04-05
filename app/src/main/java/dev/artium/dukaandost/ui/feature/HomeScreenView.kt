@@ -4,14 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,14 +36,18 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import dev.artium.dukaandost.MainActivity
+import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
+import dev.artium.dukaandost.ui.theme.Typography
 
 
 @Preview(showBackground = true)
@@ -49,12 +55,16 @@ import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 fun HomeScreenPreview() {
     val navController = rememberNavController()
     DukaanDostTheme {
-        HomeScreenView(navController, false)
+        HomeScreenView(navController, false, emptyList())
     }
 }
 
 @Composable
-fun HomeScreenView(navController: NavHostController, isExpandedScreen: Boolean) {
+fun HomeScreenView(
+    navController: NavHostController,
+    isExpandedScreen: Boolean,
+    listOfProducts: List<ProductModel>
+) {
     Scaffold(
         Modifier.background(AppBackground)
     ) { paddingValues ->
@@ -70,6 +80,51 @@ fun HomeScreenView(navController: NavHostController, isExpandedScreen: Boolean) 
                     navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/$value")
                 },
             )
+            ProductListView(Modifier.weight(1f), listOfProducts)
+        }
+    }
+}
+
+@Composable
+fun ProductListView(modifier: Modifier, listOfProducts: List<ProductModel>) {
+    LazyColumn(modifier) {
+        items(listOfProducts) { product ->
+            ProductItemView(product)
+            Spacer(modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(DividerGrey))
+        }
+    }
+}
+
+@Composable
+fun ProductItemView(product: ProductModel) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp)) {
+        AsyncImage(
+            modifier = Modifier.size(100.dp),
+            model = product.image,
+            contentDescription = null,
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Column {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = product.title,
+                style = Typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = product.price.toString(), style = Typography.titleLarge)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = product.rating.rate.toString(), style = Typography.bodyLarge)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = product.category, style = Typography.bodyLarge)
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
