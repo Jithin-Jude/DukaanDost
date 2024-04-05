@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
@@ -65,8 +66,8 @@ fun HomeScreenView(navController: NavHostController, isExpandedScreen: Boolean) 
             SearchBarWithClear(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onSendClick = {
-
+                onSendClick = { value ->
+                    navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/$value")
                 },
             )
         }
@@ -101,6 +102,7 @@ fun SearchBarWithClear(
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(onSearch = {
+                    onSendClick(textState.value)
                     keyboardController?.hide()
                 })
             )
@@ -114,7 +116,6 @@ fun SearchBarWithClear(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable {
-                                onSendClick(textState.value)
                                 textState.value = ""
                             }
                     )

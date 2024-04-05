@@ -38,14 +38,23 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun DashboardView(navController: NavHostController, isExpandedScreen: Boolean) {
-        NavHost(navController, startDestination = "homeScreen") {
-            composable("homeScreen") { HomeScreenView(navController, isExpandedScreen) }
-            composable("productDetailScreen") {
-                ProductDetailScreenView(
-                    navController,
-                    isExpandedScreen
-                )
+        NavHost(navController, startDestination = Routes.HomeScreen.route) {
+            composable(Routes.HomeScreen.route) { HomeScreenView(navController, isExpandedScreen) }
+            composable(Routes.ProductDetailScreen.route + "/{product_id}") { navBackStack ->
+                val selectedProductId = navBackStack.arguments?.getString("product_id")
+                selectedProductId?.let { id ->
+                    ProductDetailScreenView(
+                        navController,
+                        isExpandedScreen,
+                        id
+                    )
+                }
             }
         }
+    }
+
+    sealed class Routes(val route: String) {
+        object HomeScreen : Routes("homeScreen")
+        object ProductDetailScreen : Routes("productDetailScreen")
     }
 }

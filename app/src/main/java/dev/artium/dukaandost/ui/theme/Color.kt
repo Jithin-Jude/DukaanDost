@@ -12,3 +12,4 @@ val Pink40 = Color(0xFF7D5260)
 
 val AppBackground = Color(0xFFFFFFFF)
 val DividerGrey = Color(0xFF888888)
+val TextColor = Color(0xFF000000)
