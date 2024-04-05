@@ -44,26 +44,31 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import dev.artium.dukaandost.DukaanDostConstants
+import dev.artium.dukaandost.DukaanDostConstants.FILTER_ALL_CATEGORIES
+import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 import dev.artium.dukaandost.ui.theme.Typography
+import dev.artium.dukaandost.viemodel.ProductViewModel
 
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    val navController = rememberNavController()
-    DukaanDostTheme {
-        HomeScreenView(navController, false, emptyList(), emptyList())
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    val navController = rememberNavController()
+//    DukaanDostTheme {
+//        HomeScreenView(navController, false, emptyList(), emptyList())
+//    }
+//}
 
 @Composable
 fun HomeScreenView(
     navController: NavHostController,
+    viewModel: ProductViewModel,
     isExpandedScreen: Boolean,
     listOfProducts: List<ProductModel>,
     listOfCategories: List<String>,
@@ -71,7 +76,10 @@ fun HomeScreenView(
     var showFilterOptionBottomSheet by remember { mutableStateOf(false) }
 
     if (showFilterOptionBottomSheet) {
-        FilterOptionBottomSheet(listOfCategories) {
+        FilterOptionBottomSheet(listOfCategories, onSelectFilter = {
+            viewModel.refreshProductList(filter = it)
+            showFilterOptionBottomSheet = false
+        }) {
             showFilterOptionBottomSheet = false
         }
     }
@@ -105,21 +113,40 @@ fun HomeScreenView(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterOptionBottomSheet(listOfCategories: List<String>, onDismiss: () -> Unit) {
+fun FilterOptionBottomSheet(
+    listOfCategories: List<String>,
+    onSelectFilter: (filter: String) -> Unit,
+    onDismiss: () -> Unit
+) {
     val modalBottomSheetState = rememberModalBottomSheetState()
+    val filtersToShow = mutableListOf<String>()
+    filtersToShow.add(FILTER_ALL_CATEGORIES)
+    filtersToShow.addAll(listOfCategories)
 
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
-        LazyColumn {
-            items(listOfCategories) { filter ->
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = filter, style = Typography.titleLarge)
-                Spacer(modifier = Modifier.height(8.dp))
+        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
+            items(filtersToShow) { filter ->
+                FilterOptionItem(filter, onSelectFilter = onSelectFilter)
             }
         }
+    }
+}
+
+@Composable
+fun FilterOptionItem(filter: String, onSelectFilter: (filter: String) -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable {
+                onSelectFilter(filter)
+            }) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = filter.capitalizeFirstLetter(), style = Typography.titleLarge)
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

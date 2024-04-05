@@ -27,8 +27,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent { }
         observeData()
-        viewModel.fetchAllProductsAndCategories()
-//        viewModel.fetchAllCategories()
     }
 
     private fun observeData() {
@@ -39,9 +37,11 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 DukaanDostTheme {
                     DashboardView(
-                        navController, isExpandedScreen,
+                        navController,
+                        viewModel,
+                        isExpandedScreen,
                         data?.listOfProducts ?: emptyList(),
-                        data?.listOfCategories ?: emptyList()
+                        data?.listOfCategories ?: emptyList(),
                     )
                 }
             }
@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun DashboardView(
         navController: NavHostController,
+        viewModel: ProductViewModel,
         isExpandedScreen: Boolean,
         listOfProducts: List<ProductModel>,
         listOfCategories: List<String>,
@@ -59,6 +60,7 @@ class MainActivity : ComponentActivity() {
             composable(Routes.HomeScreen.route) {
                 HomeScreenView(
                     navController,
+                    viewModel,
                     isExpandedScreen,
                     listOfProducts,
                     listOfCategories

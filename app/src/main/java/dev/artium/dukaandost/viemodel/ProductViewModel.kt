@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.artium.dukaandost.DukaanDostConstants
 import dev.artium.dukaandost.DukkanDostUtils.printLog
 import dev.artium.dukaandost.domain.DataState
 import dev.artium.dukaandost.model.ProductCategoryDataModel
@@ -17,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductViewModel @Inject constructor(private val repository: ProductRepository) :
     ViewModel() {
-
     private val _productCategoryData = MutableLiveData<ProductCategoryDataModel>()
     val productCategoryData: LiveData<ProductCategoryDataModel>
         get() = _productCategoryData
@@ -26,11 +26,16 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
     val loader: LiveData<Boolean>
         get() = _loader
 
-    fun fetchAllProductsAndCategories() {
+    private var listOfProducts: List<ProductModel> = emptyList()
+    private var listOfCategories: List<String> = emptyList()
+
+    init {
+        fetchAllProductsAndCategories()
+    }
+
+    private fun fetchAllProductsAndCategories() {
         viewModelScope.launch(Dispatchers.IO) {
             _loader.postValue(true)
-            var listOfProducts: List<ProductModel> = emptyList()
-            var listOfCategories: List<String> = emptyList()
             repository.getAllProducts().collect { result ->
                 when (result) {
                     is DataState.Loading -> {
@@ -75,5 +80,19 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
             )
             _loader.postValue(false)
         }
+    }
+
+    fun refreshProductList(filter: String) {
+        val productListWithFilter: List<ProductModel>
+        if (filter != DukaanDostConstants.FILTER_ALL_CATEGORIES) {
+            productListWithFilter = listOfProducts.filter { it.category == filter }
+        } else {
+            productListWithFilter = listOfProducts
+        }
+
+        _productCategoryData.value = ProductCategoryDataModel(
+            listOfProducts = productListWithFilter,
+            listOfCategories = listOfCategories
+        )
     }
 }
