@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.artium.dukaandost.DukkanDostUtils.printLog
 import dev.artium.dukaandost.domain.DataState
+import dev.artium.dukaandost.model.ProductCategoryDataModel
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.network.ProductRepository
 import kotlinx.coroutines.Dispatchers
@@ -17,19 +18,19 @@ import javax.inject.Inject
 class ProductViewModel @Inject constructor(private val repository: ProductRepository) :
     ViewModel() {
 
-    private val _listOfProducts = MutableLiveData<List<ProductModel>?>()
-    val listOfProducts: LiveData<List<ProductModel>?>
-        get() = _listOfProducts
-
-    private val _listOfCategories = MutableLiveData<List<String>?>()
-    val listOfCategories: LiveData<List<String>?>
-        get() = _listOfCategories
+    private val _productCategoryData = MutableLiveData<ProductCategoryDataModel>()
+    val productCategoryData: LiveData<ProductCategoryDataModel>
+        get() = _productCategoryData
 
     private val _loader = MutableLiveData<Boolean>()
     val loader: LiveData<Boolean>
         get() = _loader
-    fun fetchAllProducts() {
+
+    fun fetchAllProductsAndCategories() {
         viewModelScope.launch(Dispatchers.IO) {
+            _loader.postValue(true)
+            var listOfProducts: List<ProductModel> = emptyList()
+            var listOfCategories: List<String> = emptyList()
             repository.getAllProducts().collect { result ->
                 when (result) {
                     is DataState.Loading -> {
@@ -39,20 +40,15 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
 
                     is DataState.Success -> {
                         printLog("fetchAllProducts Success: ${result.data}")
-                        _listOfProducts.postValue(result.data)
+                        listOfProducts = result.data
                     }
 
                     is DataState.Error -> {
                         printLog("fetchAllProducts Error")
-                        _listOfProducts.postValue(null)
+                        listOfProducts = emptyList()
                     }
                 }
             }
-        }
-    }
-
-    fun fetchAllCategories() {
-        viewModelScope.launch(Dispatchers.IO) {
             repository.getAllCategories().collect { result ->
                 when (result) {
                     is DataState.Loading -> {
@@ -62,15 +58,22 @@ class ProductViewModel @Inject constructor(private val repository: ProductReposi
 
                     is DataState.Success -> {
                         printLog("fetchAllCategories Success: ${result.data}")
-                        _listOfCategories.postValue(result.data)
+                        listOfCategories = result.data
                     }
 
                     is DataState.Error -> {
                         printLog("fetchAllCategories Error")
-                        _listOfCategories.postValue(null)
+                        listOfCategories = emptyList()
                     }
                 }
             }
+            _productCategoryData.postValue(
+                ProductCategoryDataModel(
+                    listOfProducts = listOfProducts,
+                    listOfCategories = listOfCategories
+                )
+            )
+            _loader.postValue(false)
         }
     }
 }

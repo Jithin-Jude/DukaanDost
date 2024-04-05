@@ -27,18 +27,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent { }
         observeData()
-        viewModel.fetchAllProducts()
+        viewModel.fetchAllProductsAndCategories()
 //        viewModel.fetchAllCategories()
     }
 
     private fun observeData() {
-        viewModel.listOfProducts.observe(this) { productList ->
+        viewModel.productCategoryData.observe(this) { data ->
             setContent {
                 val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
                 val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
                 val navController = rememberNavController()
                 DukaanDostTheme {
-                    DashboardView(navController, isExpandedScreen, productList ?: emptyList())
+                    DashboardView(
+                        navController, isExpandedScreen,
+                        data?.listOfProducts ?: emptyList(),
+                        data?.listOfCategories ?: emptyList()
+                    )
                 }
             }
         }
@@ -48,14 +52,16 @@ class MainActivity : ComponentActivity() {
     fun DashboardView(
         navController: NavHostController,
         isExpandedScreen: Boolean,
-        listOfProducts: List<ProductModel>
+        listOfProducts: List<ProductModel>,
+        listOfCategories: List<String>,
     ) {
         NavHost(navController, startDestination = Routes.HomeScreen.route) {
             composable(Routes.HomeScreen.route) {
                 HomeScreenView(
                     navController,
                     isExpandedScreen,
-                    listOfProducts
+                    listOfProducts,
+                    listOfCategories
                 )
             }
             composable(Routes.ProductDetailScreen.route + "/{product_id}") { navBackStack ->
