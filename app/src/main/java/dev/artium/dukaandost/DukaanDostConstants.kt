@@ -2,7 +2,6 @@ package dev.artium.dukaandost
 
 object DukaanDostConstants {
     const val BASE_URL = "https://fakestoreapi.com/"
-    const val FILTER_ALL_CATEGORIES = "All categories"
 
     const val SORT_DEFAULT = "sort_default"
     const val SORT_RATING = "Rating"

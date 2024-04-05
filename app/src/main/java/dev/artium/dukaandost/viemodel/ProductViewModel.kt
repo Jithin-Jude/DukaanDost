@@ -30,8 +30,9 @@ class ProductViewModel @Inject constructor(
         private const val SEARCH_TERM = "search_term"
         private const val SORT_OPTION = "sort_option"
     }
-    var mSelectedFilter: String
-        get() = savedStateHandle[FILTER_KEY] ?: DukaanDostConstants.FILTER_ALL_CATEGORIES
+
+    var mSelectedFilterList: List<String>
+        get() = savedStateHandle[FILTER_KEY] ?: listOf()
         set(value) {
             savedStateHandle[FILTER_KEY] = value
         }
@@ -59,7 +60,7 @@ class ProductViewModel @Inject constructor(
 
     init {
         if (!savedStateHandle.contains(FILTER_KEY)) {
-            savedStateHandle[FILTER_KEY] = DukaanDostConstants.FILTER_ALL_CATEGORIES
+            savedStateHandle[FILTER_KEY] = listOf<String>()
         }
         if (!savedStateHandle.contains(SEARCH_TERM)) {
             savedStateHandle[SEARCH_TERM] = ""
@@ -121,14 +122,14 @@ class ProductViewModel @Inject constructor(
 
     fun refreshProductList(
         searchTerm: String = mSearchTerm,
-        filter: String = mSelectedFilter,
+        filter: List<String> = mSelectedFilterList,
         sortOption: String = mSortOption,
     ) {
         mSearchTerm = searchTerm
-        mSelectedFilter = filter
+        mSelectedFilterList = filter
         mSortOption = sortOption
 
-        val productListWithFilter = getFilteredList(listOfProducts, mSelectedFilter)
+        val productListWithFilter = getFilteredList(listOfProducts, mSelectedFilterList)
 
         val productListContainsSearchTerm =
             getProductListWithSearchTerm(listOfProducts, mSearchTerm)
@@ -146,11 +147,15 @@ class ProductViewModel @Inject constructor(
 
     private fun getFilteredList(
         listOfProducts: List<ProductModel>,
-        filter: String
+        filters: List<String>
     ): List<ProductModel> {
         val productListWithFilter: List<ProductModel>
-        if (filter != DukaanDostConstants.FILTER_ALL_CATEGORIES) {
-            productListWithFilter = listOfProducts.filter { it.category == mSelectedFilter }
+        if (filters.isNotEmpty()) {
+            productListWithFilter = listOfProducts.filter { product ->
+                filters.any { filter ->
+                    product.category == filter
+                }
+            }
         } else {
             productListWithFilter = listOfProducts
         }

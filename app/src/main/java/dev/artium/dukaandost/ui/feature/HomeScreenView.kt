@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -42,7 +43,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import dev.artium.dukaandost.DukaanDostConstants.FILTER_ALL_CATEGORIES
 import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_HIGH_TO_HIGH
 import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_LOW_TO_HIGH
 import dev.artium.dukaandost.DukaanDostConstants.SORT_RATING
@@ -51,6 +51,7 @@ import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
+import dev.artium.dukaandost.ui.theme.Purple40
 import dev.artium.dukaandost.ui.theme.Typography
 import dev.artium.dukaandost.viemodel.ProductViewModel
 
@@ -76,12 +77,12 @@ fun HomeScreenView(
     var showSortOptionBottomSheet by remember { mutableStateOf(false) }
 
     if (showFilterOptionBottomSheet) {
-        FilterOptionBottomSheet(listOfCategories, onSelectFilter = {
-            viewModel.refreshProductList(filter = it)
-            showFilterOptionBottomSheet = false
-        }) {
-            showFilterOptionBottomSheet = false
-        }
+        FilterOptionBottomSheet(listOfCategories,
+            viewModel.mSelectedFilterList,
+            onSelectFilter = { viewModel.refreshProductList(filter = it) },
+            onDismiss = {
+                showFilterOptionBottomSheet = false
+            })
     }
 
     if (showSortOptionBottomSheet) {
@@ -126,22 +127,47 @@ fun HomeScreenView(
 @Composable
 fun FilterOptionBottomSheet(
     listOfCategories: List<String>,
-    onSelectFilter: (filter: String) -> Unit,
+    preSelectedFilters: List<String>,
+    onSelectFilter: (selectedFilters: List<String>) -> Unit,
     onDismiss: () -> Unit
 ) {
     val modalBottomSheetState = rememberModalBottomSheetState()
     val filtersToShow = mutableListOf<String>()
-    filtersToShow.add(FILTER_ALL_CATEGORIES)
     filtersToShow.addAll(listOfCategories)
+
+    val selectedFilters = remember { preSelectedFilters.toMutableList() }
 
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
-        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
+        LazyColumn(Modifier.padding(bottom = 100.dp, start = 24.dp, end = 24.dp)) {
             items(filtersToShow) { filter ->
-                FilterOptionItem(filter, onSelectOption = onSelectFilter)
+                FilterOptionItem(
+                    filter,
+                    selectedFilters.contains(filter),
+                    onSelectOption = { option, selected ->
+                        if (selected) {
+                            selectedFilters.add(option)
+                        } else {
+                            selectedFilters.remove(option)
+                        }
+                        onSelectFilter(selectedFilters)
+                    })
+            }
+            item {
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(text = "Clear filter",
+                        style = Typography.bodyLarge, color = Purple40,
+                        modifier = Modifier.clickable {
+                            selectedFilters.clear()
+                            onSelectFilter(selectedFilters)
+                            onDismiss()
+                        }
+                    )
+                }
             }
         }
     }
@@ -161,16 +187,45 @@ fun SortOptionBottomSheet(
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
-        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
+        LazyColumn(Modifier.padding(bottom = 100.dp, start = 24.dp, end = 24.dp)) {
             items(filtersToShow) { filter ->
-                FilterOptionItem(filter, onSelectOption = onSelectOption)
+                SortOptionItem(filter, onSelectOption = onSelectOption)
             }
         }
     }
 }
 
 @Composable
-fun FilterOptionItem(option: String, onSelectOption: (option: String) -> Unit) {
+fun FilterOptionItem(
+    option: String,
+    selected: Boolean,
+    onSelectOption: (option: String, selected: Boolean) -> Unit
+) {
+    val checkedState = remember { mutableStateOf(selected) }
+    Column(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Row {
+            Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
+            Spacer(modifier = Modifier.weight(1f))
+            Checkbox(
+                checked = checkedState.value,
+                onCheckedChange = { isChecked ->
+                    // Update the state when the checkbox is clicked
+                    checkedState.value = isChecked
+                    onSelectOption(option, isChecked)
+                }
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+fun SortOptionItem(option: String, onSelectOption: (option: String) -> Unit) {
+    val checkedState = remember { mutableStateOf(false) }
     Column(
         Modifier
             .fillMaxWidth()
@@ -178,7 +233,17 @@ fun FilterOptionItem(option: String, onSelectOption: (option: String) -> Unit) {
                 onSelectOption(option)
             }) {
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
+        Row {
+            Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
+            Spacer(modifier = Modifier.weight(1f))
+            Checkbox(
+                checked = checkedState.value,
+                onCheckedChange = { isChecked ->
+                    // Update the state when the checkbox is clicked
+                    checkedState.value = isChecked
+                }
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
