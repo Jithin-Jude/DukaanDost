@@ -39,19 +39,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import dev.artium.dukaandost.DukaanDostConstants
 import dev.artium.dukaandost.DukaanDostConstants.FILTER_ALL_CATEGORIES
 import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
-import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 import dev.artium.dukaandost.ui.theme.Typography
 import dev.artium.dukaandost.viemodel.ProductViewModel
 
@@ -92,17 +88,18 @@ fun HomeScreenView(
                 .fillMaxSize()
         ) {
             SearchBarWithFilterSort(
+                viewModel,
                 modifier = Modifier
                     .fillMaxWidth(),
                 onSendClick = { value ->
-
+                    viewModel.refreshProductList(searchTerm = value)
                 },
                 showFilterOptions = {
                     showFilterOptionBottomSheet = true
                 },
                 showSortOptions = {
 
-                }
+                },
             )
             ProductListView(Modifier.weight(1f), listOfProducts, onClickProduct = {
                 navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
@@ -203,18 +200,19 @@ fun ProductItemView(product: ProductModel, onClickProduct: (product: ProductMode
 
 @Composable
 fun SearchBarWithFilterSort(
+    viewModel: ProductViewModel,
     modifier: Modifier = Modifier,
     onSendClick: (String) -> Unit,
     showFilterOptions: () -> Unit,
     showSortOptions: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val textState = remember { mutableStateOf("") }
+    val searchTerm = remember { mutableStateOf(viewModel.mSearchTerm) }
 
     Row(modifier = modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
-            value = textState.value,
-            onValueChange = { textState.value = it },
+            value = searchTerm.value,
+            onValueChange = { searchTerm.value = it },
             label = { Text("Search") },
             maxLines = 1,
             modifier = Modifier.weight(1f),
@@ -227,7 +225,7 @@ fun SearchBarWithFilterSort(
                 cursorColor = DividerGrey
             ),
             suffix = {
-                if (textState.value.isNotEmpty()) {
+                if (searchTerm.value.isNotEmpty()) {
                     Icon(
                         imageVector = Icons.Default.Clear,
                         tint = DividerGrey,
@@ -235,7 +233,8 @@ fun SearchBarWithFilterSort(
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                textState.value = ""
+                                searchTerm.value = ""
+                                onSendClick(searchTerm.value)
                             }
                     )
                 }
@@ -244,7 +243,7 @@ fun SearchBarWithFilterSort(
                 imeAction = ImeAction.Search
             ),
             keyboardActions = KeyboardActions(onSearch = {
-                onSendClick(textState.value)
+                onSendClick(searchTerm.value)
                 keyboardController?.hide()
             })
         )
