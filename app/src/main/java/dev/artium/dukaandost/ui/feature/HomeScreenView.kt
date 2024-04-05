@@ -77,19 +77,25 @@ fun HomeScreenView(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onSendClick = { value ->
-                    navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/$value")
+
                 },
             )
-            ProductListView(Modifier.weight(1f), listOfProducts)
+            ProductListView(Modifier.weight(1f), listOfProducts, onClickProduct = {
+                navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
+            })
         }
     }
 }
 
 @Composable
-fun ProductListView(modifier: Modifier, listOfProducts: List<ProductModel>) {
+fun ProductListView(
+    modifier: Modifier,
+    listOfProducts: List<ProductModel>,
+    onClickProduct: (product: ProductModel) -> Unit
+) {
     LazyColumn(modifier) {
         items(listOfProducts) { product ->
-            ProductItemView(product)
+            ProductItemView(product, onClickProduct)
             Spacer(modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
@@ -99,11 +105,14 @@ fun ProductListView(modifier: Modifier, listOfProducts: List<ProductModel>) {
 }
 
 @Composable
-fun ProductItemView(product: ProductModel) {
+fun ProductItemView(product: ProductModel, onClickProduct: (product: ProductModel) -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(16.dp)) {
+            .padding(16.dp)
+            .clickable {
+                onClickProduct(product)
+            }) {
         AsyncImage(
             modifier = Modifier.size(100.dp),
             model = product.image,

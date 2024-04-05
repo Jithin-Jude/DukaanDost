@@ -64,7 +64,8 @@ class MainActivity : ComponentActivity() {
                     ProductDetailScreenView(
                         navController,
                         isExpandedScreen,
-                        id
+                        id,
+                        listOfProducts
                     )
                 }
             }

@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.theme.AppBackground
-import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 import dev.artium.dukaandost.ui.theme.TextColor
 
@@ -23,7 +23,7 @@ import dev.artium.dukaandost.ui.theme.TextColor
 fun ProductDetailScreenPreview() {
     val navController = rememberNavController()
     DukaanDostTheme {
-        ProductDetailScreenView(navController, false, "0")
+        ProductDetailScreenView(navController, false, "0", emptyList())
     }
 }
 
@@ -31,8 +31,11 @@ fun ProductDetailScreenPreview() {
 fun ProductDetailScreenView(
     navController: NavHostController,
     isExpandedScreen: Boolean,
-    selectedProductId: String
+    selectedProductId: String,
+    listOfProducts: List<ProductModel>
 ) {
+    val selectedProduct = listOfProducts.find { it.id.toString() == selectedProductId }
+
     Scaffold(
         Modifier.background(AppBackground)
     ) { paddingValues ->
@@ -42,7 +45,7 @@ fun ProductDetailScreenView(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "value :=> ${selectedProductId}", color = TextColor)
+            Text(text = "value :=> ${selectedProduct?.title}", color = TextColor)
         }
     }
 }
