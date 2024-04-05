@@ -43,6 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import dev.artium.dukaandost.DukaanDostConstants.FILTER_ALL_CATEGORIES
+import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_HIGH_TO_HIGH
+import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_LOW_TO_HIGH
+import dev.artium.dukaandost.DukaanDostConstants.SORT_RATING
 import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.model.ProductModel
@@ -70,6 +73,7 @@ fun HomeScreenView(
     listOfCategories: List<String>,
 ) {
     var showFilterOptionBottomSheet by remember { mutableStateOf(false) }
+    var showSortOptionBottomSheet by remember { mutableStateOf(false) }
 
     if (showFilterOptionBottomSheet) {
         FilterOptionBottomSheet(listOfCategories, onSelectFilter = {
@@ -79,6 +83,16 @@ fun HomeScreenView(
             showFilterOptionBottomSheet = false
         }
     }
+
+    if (showSortOptionBottomSheet) {
+        SortOptionBottomSheet(onSelectOption = {
+            viewModel.refreshProductList(sortOption = it)
+            showSortOptionBottomSheet = false
+        }) {
+            showSortOptionBottomSheet = false
+        }
+    }
+
     Scaffold(
         Modifier.background(AppBackground)
     ) { paddingValues ->
@@ -98,7 +112,7 @@ fun HomeScreenView(
                     showFilterOptionBottomSheet = true
                 },
                 showSortOptions = {
-
+                    showSortOptionBottomSheet = true
                 },
             )
             ProductListView(Modifier.weight(1f), listOfProducts, onClickProduct = {
@@ -127,22 +141,44 @@ fun FilterOptionBottomSheet(
     ) {
         LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
             items(filtersToShow) { filter ->
-                FilterOptionItem(filter, onSelectFilter = onSelectFilter)
+                FilterOptionItem(filter, onSelectOption = onSelectFilter)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SortOptionBottomSheet(
+    onSelectOption: (option: String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val modalBottomSheetState = rememberModalBottomSheetState()
+    val filtersToShow = listOf(SORT_RATING, SORT_PRICE_LOW_TO_HIGH, SORT_PRICE_HIGH_TO_HIGH)
+
+    ModalBottomSheet(
+        onDismissRequest = { onDismiss() },
+        sheetState = modalBottomSheetState,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+    ) {
+        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
+            items(filtersToShow) { filter ->
+                FilterOptionItem(filter, onSelectOption = onSelectOption)
             }
         }
     }
 }
 
 @Composable
-fun FilterOptionItem(filter: String, onSelectFilter: (filter: String) -> Unit) {
+fun FilterOptionItem(option: String, onSelectOption: (option: String) -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
             .clickable {
-                onSelectFilter(filter)
+                onSelectOption(option)
             }) {
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = filter.capitalizeFirstLetter(), style = Typography.titleLarge)
+        Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

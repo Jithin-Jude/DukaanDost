@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.artium.dukaandost.DukaanDostConstants
+import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_HIGH_TO_HIGH
+import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_LOW_TO_HIGH
+import dev.artium.dukaandost.DukaanDostConstants.SORT_RATING
 import dev.artium.dukaandost.DukkanDostUtils.printLog
 import dev.artium.dukaandost.domain.DataState
 import dev.artium.dukaandost.model.ProductCategoryDataModel
@@ -25,17 +28,22 @@ class ProductViewModel @Inject constructor(
     companion object {
         private const val FILTER_KEY = "selected_filter"
         private const val SEARCH_TERM = "search_term"
+        private const val SORT_OPTION = "sort_option"
     }
-
     var mSelectedFilter: String
-        get() = savedStateHandle.get(FILTER_KEY) ?: DukaanDostConstants.FILTER_ALL_CATEGORIES
+        get() = savedStateHandle[FILTER_KEY] ?: DukaanDostConstants.FILTER_ALL_CATEGORIES
         set(value) {
             savedStateHandle[FILTER_KEY] = value
         }
     var mSearchTerm: String
-        get() = savedStateHandle.get(SEARCH_TERM) ?: ""
+        get() = savedStateHandle[SEARCH_TERM] ?: ""
         set(value) {
             savedStateHandle[SEARCH_TERM] = value
+        }
+    var mSortOption: String
+        get() = savedStateHandle[SORT_OPTION] ?: DukaanDostConstants.SORT_DEFAULT
+        set(value) {
+            savedStateHandle[SORT_OPTION] = value
         }
 
     private val _productCategoryData = MutableLiveData<ProductCategoryDataModel>()
@@ -55,6 +63,9 @@ class ProductViewModel @Inject constructor(
         }
         if (!savedStateHandle.contains(SEARCH_TERM)) {
             savedStateHandle[SEARCH_TERM] = ""
+        }
+        if (!savedStateHandle.contains(SORT_OPTION)) {
+            savedStateHandle[SORT_OPTION] = DukaanDostConstants.SORT_DEFAULT
         }
         fetchAllProductsAndCategories()
     }
@@ -110,23 +121,25 @@ class ProductViewModel @Inject constructor(
 
     fun refreshProductList(
         searchTerm: String = mSearchTerm,
-        filter: String = mSelectedFilter
+        filter: String = mSelectedFilter,
+        sortOption: String = mSortOption,
     ) {
         mSearchTerm = searchTerm
         mSelectedFilter = filter
+        mSortOption = sortOption
 
         val productListWithFilter: List<ProductModel>
-        if (filter != DukaanDostConstants.FILTER_ALL_CATEGORIES) {
-            productListWithFilter = listOfProducts.filter { it.category == filter }
+        if (mSelectedFilter != DukaanDostConstants.FILTER_ALL_CATEGORIES) {
+            productListWithFilter = listOfProducts.filter { it.category == mSelectedFilter }
         } else {
             productListWithFilter = listOfProducts
         }
 
         val productListContainsSearchTerm: List<ProductModel>
-        if (searchTerm.isNotBlank()) {
+        if (mSearchTerm.isNotBlank()) {
             productListContainsSearchTerm = listOfProducts.filter {
-                it.title.lowercase().contains(searchTerm) ||
-                        it.category.lowercase().contains(searchTerm)
+                it.title.lowercase().contains(mSearchTerm) ||
+                        it.category.lowercase().contains(mSearchTerm)
             }
         } else {
             productListContainsSearchTerm = listOfProducts
@@ -135,9 +148,29 @@ class ProductViewModel @Inject constructor(
         val intersectionList =
             productListWithFilter.intersect(productListContainsSearchTerm.toSet()).toList()
 
+        val sortedIntersectionList: List<ProductModel>
+        when (mSortOption) {
+            SORT_RATING -> {
+                sortedIntersectionList = intersectionList.sortedByDescending { it.rating.rate }
+            }
+
+            SORT_PRICE_LOW_TO_HIGH -> {
+                sortedIntersectionList = intersectionList.sortedBy { it.price }
+            }
+
+            SORT_PRICE_HIGH_TO_HIGH -> {
+                sortedIntersectionList = intersectionList.sortedByDescending { it.price }
+            }
+
+            else -> {
+                sortedIntersectionList = intersectionList
+            }
+        }
+
+
 
         _productCategoryData.value = ProductCategoryDataModel(
-            listOfProducts = intersectionList,
+            listOfProducts = sortedIntersectionList,
             listOfCategories = listOfCategories
         )
     }
