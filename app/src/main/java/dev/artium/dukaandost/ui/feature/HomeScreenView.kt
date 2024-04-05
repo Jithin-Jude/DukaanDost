@@ -3,6 +3,7 @@ package dev.artium.dukaandost.ui.feature
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +36,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
@@ -42,23 +45,23 @@ import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 
 @Preview(showBackground = true)
 @Composable
-fun AppPreview() {
+fun HomeScreenPreview() {
+    val navController = rememberNavController()
     DukaanDostTheme {
-        HomeScreenView(false)
+        HomeScreenView(navController, false)
     }
 }
 
 @Composable
-fun HomeScreenView(isExpandedScreen: Boolean) {
+fun HomeScreenView(navController: NavHostController, isExpandedScreen: Boolean) {
     Scaffold(
         Modifier.background(AppBackground)
     ) { paddingValues ->
-        Box(
+        Column(
             Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-
             SearchBarWithClear(
                 modifier = Modifier
                     .fillMaxWidth(),

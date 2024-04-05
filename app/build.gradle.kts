@@ -84,5 +84,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
+    // Window Size
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 }

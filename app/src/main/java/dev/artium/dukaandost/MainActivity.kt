@@ -8,9 +8,13 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.artium.dukaandost.ui.feature.HomeScreenView
+import dev.artium.dukaandost.ui.feature.ProductDetailScreenView
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 import dev.artium.dukaandost.viemodel.ProductViewModel
 
@@ -23,11 +27,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
             val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+            val navController = rememberNavController()
             DukaanDostTheme {
-                HomeScreenView(isExpandedScreen)
+                DashboardView(navController, isExpandedScreen)
             }
         }
 //        viewModel.fetchAllProducts()
 //        viewModel.fetchAllCategories()
+    }
+
+    @Composable
+    fun DashboardView(navController: NavHostController, isExpandedScreen: Boolean) {
+        NavHost(navController, startDestination = "homeScreen") {
+            composable("homeScreen") { HomeScreenView(navController, isExpandedScreen) }
+            composable("productDetailScreen") {
+                ProductDetailScreenView(
+                    navController,
+                    isExpandedScreen
+                )
+            }
+        }
     }
 }
