@@ -71,14 +71,13 @@ class ProductViewModel @Inject constructor(
         fetchAllProductsAndCategories()
     }
 
-    private fun fetchAllProductsAndCategories() {
+    fun fetchAllProductsAndCategories() {
         viewModelScope.launch(Dispatchers.IO) {
             _loader.postValue(true)
             repository.getAllProducts().collect { result ->
                 when (result) {
                     is DataState.Loading -> {
                         printLog("fetchAllProducts Loading")
-                        _loader.postValue(true)
                     }
 
                     is DataState.Success -> {
@@ -96,7 +95,6 @@ class ProductViewModel @Inject constructor(
                 when (result) {
                     is DataState.Loading -> {
                         printLog("fetchAllCategories Loading")
-                        _loader.postValue(true)
                     }
 
                     is DataState.Success -> {

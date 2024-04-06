@@ -282,7 +282,8 @@ fun ProductGridView(
     onClickProduct: (product: ProductModel) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = modifier.padding(horizontal = 16.dp),
+        modifier = modifier
+            .padding(horizontal = 16.dp),
         columns = GridCells.Fixed(4)
     ) {
         items(listOfProducts) { product ->
@@ -310,7 +311,10 @@ fun ProductListView(
 
 @Composable
 fun ProductGridItemView(product: ProductModel, onClickProduct: (product: ProductModel) -> Unit) {
-    Box(Modifier.padding(8.dp)) {
+    Box(
+        Modifier
+            .padding(8.dp)
+            .background(AppBackground)) {
         Column(Modifier.clickable {
             onClickProduct(product)
         }) {
