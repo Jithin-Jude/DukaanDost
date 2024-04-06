@@ -100,12 +100,11 @@ fun HomeScreenView(
         }
     }
 
-    Scaffold(
-        Modifier.background(AppBackground)
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Column(
             Modifier
                 .padding(paddingValues)
+                .background(AppBackground)
                 .fillMaxSize()
         ) {
             SearchBarWithFilterSort(

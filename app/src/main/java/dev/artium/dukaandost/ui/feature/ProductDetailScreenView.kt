@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,8 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,8 +42,10 @@ import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.theme.AppBackground
+import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 import dev.artium.dukaandost.ui.theme.PureBlack
+import dev.artium.dukaandost.ui.theme.TransparentWhite
 import dev.artium.dukaandost.ui.theme.Typography
 
 
@@ -62,12 +69,11 @@ fun ProductDetailScreenView(
         listOfProducts.find { it.id.toString() == selectedProductId }
     }
 
-    Scaffold(
-        Modifier.background(AppBackground),
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             Modifier
                 .padding(paddingValues)
+                .background(AppBackground)
                 .fillMaxSize()
         ) {
             if (isExpandedScreen) {
@@ -158,73 +164,93 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
 
 @Composable
 fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct: ProductModel?) {
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
 
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
-            model = selectedProduct?.image,
-            contentDescription = null,
-            error = painterResource(R.drawable.ic_launcher_background)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        LazyColumn(
-        ) {
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = selectedProduct?.title.toString(),
-                        style = Typography.bodyLarge,
-                    )
+    Box(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f),
+                model = selectedProduct?.image,
+                contentDescription = null,
+                error = painterResource(R.drawable.ic_launcher_background)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            LazyColumn(
+            ) {
+                item {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = selectedProduct?.title.toString(),
+                            style = Typography.bodyLarge,
+                        )
+                    }
+                }
+                item {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = selectedProduct?.price.toString().appendCurrencyCode(),
+                            style = Typography.titleLarge
+                        )
+                    }
+                }
+                item {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = selectedProduct?.rating?.rate.toString(),
+                            style = Typography.bodyLarge
+                        )
+                    }
+                }
+                item {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = selectedProduct?.category.toString().capitalizeFirstLetter(),
+                            style = Typography.bodyLarge
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = selectedProduct?.price.toString().appendCurrencyCode(),
-                        style = Typography.titleLarge
-                    )
-                }
-            }
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = selectedProduct?.rating?.rate.toString(),
-                        style = Typography.bodyLarge
-                    )
-                }
-            }
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = selectedProduct?.category.toString().capitalizeFirstLetter(),
-                        style = Typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+        }
+        Box(Modifier.padding(top = 16.dp, start = 16.dp)) {
+            Button(
+                modifier = Modifier
+                    .size(36.dp),
+                contentPadding = PaddingValues(0.dp),
+                onClick = {
+                    navController.navigateUp()
+                },
+                shape = RoundedCornerShape(100.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = TransparentWhite
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    tint = DividerGrey,
+                    contentDescription = "Back"
+                )
             }
         }
     }
@@ -235,10 +261,10 @@ fun AppBar(navController: NavHostController) {
     Row(Modifier.padding(16.dp)) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            tint = PureBlack,
+            tint = DividerGrey,
             contentDescription = "Back",
             modifier = Modifier
-                .size(32.dp)
+                .size(24.dp)
                 .clickable {
                     navController.navigateUp()
                 }
