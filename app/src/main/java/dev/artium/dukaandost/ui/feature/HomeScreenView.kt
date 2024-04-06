@@ -1,7 +1,9 @@
 package dev.artium.dukaandost.ui.feature
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +29,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
@@ -55,10 +55,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
-import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
+import dev.artium.dukaandost.ui.components.CategoryLabelView
 import dev.artium.dukaandost.ui.components.FilterOptionBottomSheet
 import dev.artium.dukaandost.ui.components.SortOptionBottomSheet
 import dev.artium.dukaandost.ui.theme.AppBackground
@@ -214,7 +214,6 @@ fun ProductGridItemView(product: ProductModel, onClickProduct: (product: Product
                     error = painterResource(R.drawable.ic_placeholed_shopping_bag)
                 )
             }
-            Spacer(modifier = Modifier.width(8.dp))
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = product.title,
@@ -222,15 +221,15 @@ fun ProductGridItemView(product: ProductModel, onClickProduct: (product: Product
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = product.price.toString().appendCurrencyCode(),
                 style = Typography.titleLarge
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(text = product.rating.rate.toString(), style = Typography.bodyLarge)
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = product.category.capitalizeFirstLetter(), style = Typography.bodyLarge)
+            Spacer(modifier = Modifier.height(2.dp))
+            CategoryLabelView(product)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
@@ -263,15 +262,15 @@ fun ProductListItemView(product: ProductModel, onClickProduct: (product: Product
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = product.price.toString().appendCurrencyCode(),
                 style = Typography.titleLarge
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(text = product.rating.rate.toString(), style = Typography.bodyLarge)
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = product.category.capitalizeFirstLetter(), style = Typography.bodyLarge)
+            Spacer(modifier = Modifier.height(2.dp))
+            CategoryLabelView(product)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

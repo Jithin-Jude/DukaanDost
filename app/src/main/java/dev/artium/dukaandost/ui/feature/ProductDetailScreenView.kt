@@ -1,6 +1,8 @@
 package dev.artium.dukaandost.ui.feature
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,9 +39,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
-import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
+import dev.artium.dukaandost.ui.components.CategoryLabelView
 import dev.artium.dukaandost.ui.components.RatingView
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
@@ -147,10 +149,7 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
                     .padding(horizontal = 16.dp)
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = selectedProduct?.category.toString().capitalizeFirstLetter(),
-                    style = Typography.bodyLarge
-                )
+                CategoryLabelView(selectedProduct)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -215,10 +214,7 @@ fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct
                             .padding(horizontal = 16.dp)
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = selectedProduct?.category.toString().capitalizeFirstLetter(),
-                            style = Typography.bodyLarge
-                        )
+                        CategoryLabelView(selectedProduct)
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
