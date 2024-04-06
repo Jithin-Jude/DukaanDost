@@ -166,17 +166,14 @@ fun FilterOptionBottomSheet(
                     })
             }
             item {
-                Row {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(text = "Clear filter",
-                        style = Typography.bodyLarge, color = Purple40,
-                        modifier = Modifier.clickable {
-                            selectedFilters.clear()
-                            onSelectFilter(selectedFilters)
-                            onDismiss()
-                        }
-                    )
-                }
+                Text(text = "Clear filter",
+                    style = Typography.bodyLarge, color = Purple40,
+                    modifier = Modifier.clickable {
+                        selectedFilters.clear()
+                        onSelectFilter(selectedFilters)
+                        onDismiss()
+                    }
+                )
             }
         }
     }
