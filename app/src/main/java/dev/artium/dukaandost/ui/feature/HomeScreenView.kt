@@ -2,6 +2,8 @@ package dev.artium.dukaandost.ui.feature
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -121,9 +126,15 @@ fun HomeScreenView(
                     showSortOptionBottomSheet = true
                 },
             )
-            ProductListView(Modifier.weight(1f), listOfProducts, onClickProduct = {
-                navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
-            })
+            if (isExpandedScreen) {
+                ProductGridView(Modifier.weight(1f), listOfProducts, onClickProduct = {
+                    navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
+                })
+            } else {
+                ProductListView(Modifier.weight(1f), listOfProducts, onClickProduct = {
+                    navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
+                })
+            }
         }
     }
 }
@@ -265,6 +276,22 @@ fun SortOptionItem(
 }
 
 @Composable
+fun ProductGridView(
+    modifier: Modifier,
+    listOfProducts: List<ProductModel>,
+    onClickProduct: (product: ProductModel) -> Unit
+) {
+    LazyVerticalGrid(
+        modifier = modifier.padding(horizontal = 16.dp),
+        columns = GridCells.Fixed(4)
+    ) {
+        items(listOfProducts) { product ->
+            ProductGridItemView(product, onClickProduct)
+        }
+    }
+}
+
+@Composable
 fun ProductListView(
     modifier: Modifier,
     listOfProducts: List<ProductModel>,
@@ -275,8 +302,43 @@ fun ProductListView(
             ProductItemView(product, onClickProduct)
             Spacer(modifier = Modifier
                 .fillMaxWidth()
-                .height(1.dp)
+                .height(0.5.dp)
                 .background(DividerGrey))
+        }
+    }
+}
+
+@Composable
+fun ProductGridItemView(product: ProductModel, onClickProduct: (product: ProductModel) -> Unit) {
+    Box(Modifier.padding(8.dp)) {
+        Column(Modifier.clickable {
+            onClickProduct(product)
+        }) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                AsyncImage(
+                    modifier = Modifier.size(100.dp),
+                    model = product.image,
+                    contentDescription = null,
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = product.title,
+                style = Typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = product.price.toString().appendCurrencyCode(),
+                style = Typography.titleLarge
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = product.rating.rate.toString(), style = Typography.bodyLarge)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = product.category.capitalizeFirstLetter(), style = Typography.bodyLarge)
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
