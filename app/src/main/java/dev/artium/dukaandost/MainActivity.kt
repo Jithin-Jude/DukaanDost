@@ -132,7 +132,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .size(48.dp)
                     .clickable {
-                        viewModel.fetchAllProductsAndCategories()
+                        viewModel.clearFiltersAndRefresh()
                     })
         }
     }

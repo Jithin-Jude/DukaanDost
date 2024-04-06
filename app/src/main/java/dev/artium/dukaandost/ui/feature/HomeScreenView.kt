@@ -1,5 +1,6 @@
 package dev.artium.dukaandost.ui.feature
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,9 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,12 +48,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import dev.artium.dukaandost.DukaanDostConstants
 import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_HIGH_TO_HIGH
 import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_LOW_TO_HIGH
 import dev.artium.dukaandost.DukaanDostConstants.SORT_RATING
@@ -73,6 +80,7 @@ import dev.artium.dukaandost.viemodel.ProductViewModel
 //    }
 //}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenView(
     navController: NavHostController,
@@ -83,6 +91,14 @@ fun HomeScreenView(
 ) {
     var showFilterOptionBottomSheet by remember { mutableStateOf(false) }
     var showSortOptionBottomSheet by remember { mutableStateOf(false) }
+    val state = rememberPullToRefreshState()
+    val scaleFraction = if (state.isRefreshing) 1f else
+        LinearOutSlowInEasing.transform(state.progress).coerceIn(0f, 1f)
+    if (state.isRefreshing) {
+        LaunchedEffect(true) {
+            viewModel.clearFiltersAndRefresh()
+        }
+    }
 
     if (showFilterOptionBottomSheet) {
         FilterOptionBottomSheet(
@@ -126,15 +142,27 @@ fun HomeScreenView(
                     showSortOptionBottomSheet = true
                 },
             )
-            if (isExpandedScreen) {
-                ProductGridView(Modifier.weight(1f), listOfProducts, onClickProduct = {
-                    navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
-                })
-            } else {
-                ProductListView(Modifier.weight(1f), listOfProducts, onClickProduct = {
-                    navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
-                })
+            Box(
+                Modifier
+                    .nestedScroll(state.nestedScrollConnection)
+                    .weight(1f)) {
+                if (isExpandedScreen) {
+                    ProductGridView(Modifier.fillMaxSize(), listOfProducts, onClickProduct = {
+                        navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
+                    })
+                } else {
+                    ProductListView(Modifier.fillMaxSize(), listOfProducts, onClickProduct = {
+                        navController.navigate(MainActivity.Routes.ProductDetailScreen.route + "/${it.id}")
+                    })
+                }
+                PullToRefreshContainer(
+                    state = state,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .graphicsLayer(scaleX = scaleFraction, scaleY = scaleFraction)
+                )
             }
+
         }
     }
 }

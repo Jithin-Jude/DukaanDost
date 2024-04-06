@@ -71,6 +71,13 @@ class ProductViewModel @Inject constructor(
         fetchAllProductsAndCategories()
     }
 
+    fun clearFiltersAndRefresh() {
+        mSearchTerm = ""
+        mSelectedFilterList = listOf()
+        mSortOption = DukaanDostConstants.SORT_DEFAULT
+        fetchAllProductsAndCategories()
+    }
+
     fun fetchAllProductsAndCategories() {
         viewModelScope.launch(Dispatchers.IO) {
             _loader.postValue(true)
