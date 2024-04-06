@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -78,7 +79,8 @@ fun HomeScreenView(
     var showSortOptionBottomSheet by remember { mutableStateOf(false) }
 
     if (showFilterOptionBottomSheet) {
-        FilterOptionBottomSheet(listOfCategories,
+        FilterOptionBottomSheet(
+            listOfCategories,
             viewModel.mSelectedFilterList,
             onSelectFilter = { viewModel.refreshProductList(filter = it) },
             onDismiss = {
@@ -87,9 +89,11 @@ fun HomeScreenView(
     }
 
     if (showSortOptionBottomSheet) {
-        SortOptionBottomSheet(onSelectOption = {
-            viewModel.refreshProductList(sortOption = it)
-            showSortOptionBottomSheet = false
+        SortOptionBottomSheet(
+            viewModel.mSortOption,
+            onSelectOption = {
+                viewModel.refreshProductList(sortOption = it)
+                showSortOptionBottomSheet = false
         }) {
             showSortOptionBottomSheet = false
         }
@@ -180,11 +184,12 @@ fun FilterOptionBottomSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SortOptionBottomSheet(
+    preSelectedOption: String,
     onSelectOption: (option: String) -> Unit,
     onDismiss: () -> Unit
 ) {
     val modalBottomSheetState = rememberModalBottomSheetState()
-    val filtersToShow = listOf(SORT_RATING, SORT_PRICE_LOW_TO_HIGH, SORT_PRICE_HIGH_TO_HIGH)
+    val sortOptionsToShow = listOf(SORT_RATING, SORT_PRICE_LOW_TO_HIGH, SORT_PRICE_HIGH_TO_HIGH)
     LaunchedEffect(Unit) {
         modalBottomSheetState.expand()
     }
@@ -194,8 +199,8 @@ fun SortOptionBottomSheet(
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
         LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
-            items(filtersToShow) { filter ->
-                SortOptionItem(filter, onSelectOption = onSelectOption)
+            items(sortOptionsToShow) { option ->
+                SortOptionItem(option, preSelectedOption == option, onSelectOption = onSelectOption)
             }
         }
     }
@@ -233,23 +238,28 @@ fun FilterOptionItem(
 }
 
 @Composable
-fun SortOptionItem(option: String, onSelectOption: (option: String) -> Unit) {
-    val checkedState = remember { mutableStateOf(false) }
+fun SortOptionItem(
+    option: String,
+    selected: Boolean,
+    onSelectOption: (option: String) -> Unit
+) {
+    val checkedState = remember { mutableStateOf(selected) }
     Column(
         Modifier
             .fillMaxWidth()
             .clickable {
+                checkedState.value = true
                 onSelectOption(option)
             }) {
         Spacer(modifier = Modifier.height(16.dp))
         Row {
             Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
             Spacer(modifier = Modifier.weight(1f))
-            Checkbox(
-                checked = checkedState.value,
-                onCheckedChange = { isChecked ->
-                    // Update the state when the checkbox is clicked
-                    checkedState.value = isChecked
+            RadioButton(
+                selected = checkedState.value,
+                onClick = {
+                    checkedState.value = true
+                    onSelectOption(option)
                 }
             )
         }
