@@ -26,20 +26,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,17 +52,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import dev.artium.dukaandost.DukaanDostConstants
-import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_HIGH_TO_HIGH
-import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_LOW_TO_HIGH
-import dev.artium.dukaandost.DukaanDostConstants.SORT_RATING
 import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
 import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.model.ProductModel
+import dev.artium.dukaandost.ui.components.FilterOptionBottomSheet
+import dev.artium.dukaandost.ui.components.SortOptionBottomSheet
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
-import dev.artium.dukaandost.ui.theme.Purple40
 import dev.artium.dukaandost.ui.theme.Typography
 import dev.artium.dukaandost.viemodel.ProductViewModel
 
@@ -167,142 +160,6 @@ fun HomeScreenView(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FilterOptionBottomSheet(
-    listOfCategories: List<String>,
-    preSelectedFilters: List<String>,
-    onSelectFilter: (selectedFilters: List<String>) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val modalBottomSheetState = rememberModalBottomSheetState()
-    LaunchedEffect(Unit) {
-        modalBottomSheetState.expand()
-    }
-    val filtersToShow = mutableListOf<String>()
-    filtersToShow.addAll(listOfCategories)
-
-    val selectedFilters = remember { preSelectedFilters.toMutableList() }
-
-    ModalBottomSheet(
-        onDismissRequest = { onDismiss() },
-        sheetState = modalBottomSheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() },
-    ) {
-        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
-            items(filtersToShow) { filter ->
-                FilterOptionItem(
-                    filter,
-                    selectedFilters.contains(filter),
-                    onSelectOption = { option, selected ->
-                        if (selected) {
-                            selectedFilters.add(option)
-                        } else {
-                            selectedFilters.remove(option)
-                        }
-                        onSelectFilter(selectedFilters)
-                    })
-            }
-            item {
-                Text(text = "Clear filter",
-                    style = Typography.bodyLarge, color = Purple40,
-                    modifier = Modifier.clickable {
-                        selectedFilters.clear()
-                        onSelectFilter(selectedFilters)
-                        onDismiss()
-                    }
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SortOptionBottomSheet(
-    preSelectedOption: String,
-    onSelectOption: (option: String) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val modalBottomSheetState = rememberModalBottomSheetState()
-    val sortOptionsToShow = listOf(SORT_RATING, SORT_PRICE_LOW_TO_HIGH, SORT_PRICE_HIGH_TO_HIGH)
-    LaunchedEffect(Unit) {
-        modalBottomSheetState.expand()
-    }
-    ModalBottomSheet(
-        onDismissRequest = { onDismiss() },
-        sheetState = modalBottomSheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() },
-    ) {
-        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
-            items(sortOptionsToShow) { option ->
-                SortOptionItem(option, preSelectedOption == option, onSelectOption = onSelectOption)
-            }
-        }
-    }
-}
-
-@Composable
-fun FilterOptionItem(
-    option: String,
-    selected: Boolean,
-    onSelectOption: (option: String, selected: Boolean) -> Unit
-) {
-    val checkedState = remember { mutableStateOf(selected) }
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .clickable {
-                checkedState.value = !checkedState.value
-                onSelectOption(option, checkedState.value)
-            }
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row {
-            Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
-            Spacer(modifier = Modifier.weight(1f))
-            Checkbox(
-                checked = checkedState.value,
-                onCheckedChange = { isChecked ->
-                    checkedState.value = isChecked
-                    onSelectOption(option, isChecked)
-                }
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
-@Composable
-fun SortOptionItem(
-    option: String,
-    selected: Boolean,
-    onSelectOption: (option: String) -> Unit
-) {
-    val checkedState = remember { mutableStateOf(selected) }
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .clickable {
-                checkedState.value = true
-                onSelectOption(option)
-            }) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row {
-            Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
-            Spacer(modifier = Modifier.weight(1f))
-            RadioButton(
-                selected = checkedState.value,
-                onClick = {
-                    checkedState.value = true
-                    onSelectOption(option)
-                }
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
 @Composable
 fun ProductGridView(
     modifier: Modifier,
@@ -328,7 +185,7 @@ fun ProductListView(
 ) {
     LazyColumn(modifier) {
         items(listOfProducts) { product ->
-            ProductItemView(product, onClickProduct)
+            ProductListItemView(product, onClickProduct)
             Spacer(modifier = Modifier
                 .fillMaxWidth()
                 .height(0.5.dp)
@@ -376,7 +233,7 @@ fun ProductGridItemView(product: ProductModel, onClickProduct: (product: Product
 }
 
 @Composable
-fun ProductItemView(product: ProductModel, onClickProduct: (product: ProductModel) -> Unit) {
+fun ProductListItemView(product: ProductModel, onClickProduct: (product: ProductModel) -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()

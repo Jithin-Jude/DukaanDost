@@ -32,6 +32,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.artium.dukaandost.model.ProductModel
+import dev.artium.dukaandost.ui.components.EmptyScreenView
+import dev.artium.dukaandost.ui.components.LoadingView
 import dev.artium.dukaandost.ui.feature.HomeScreenView
 import dev.artium.dukaandost.ui.feature.ProductDetailScreenView
 import dev.artium.dukaandost.ui.theme.AppBackground
@@ -107,48 +109,6 @@ class MainActivity : ComponentActivity() {
                         listOfProducts
                     )
                 }
-            }
-        }
-    }
-
-    @Composable
-    fun LoadingView() {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(AppBackground), contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(48.dp),
-                strokeWidth = 3.dp
-            )
-        }
-    }
-
-    @Composable
-    fun EmptyScreenView(viewModel: ProductViewModel) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(AppBackground)
-                .clickable {
-                    viewModel.clearFiltersAndRefresh()
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    tint = DividerGrey,
-                    contentDescription = "Refresh",
-                    modifier = Modifier
-                        .size(48.dp)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "No products found!\nPlease retry",
-                    textAlign = TextAlign.Center
-                )
             }
         }
     }

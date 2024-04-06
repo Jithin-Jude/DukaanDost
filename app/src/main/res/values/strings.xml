@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DukaanDost</string>
+    <string name="no_products_found_please_retry">No products found!\nPlease retry</string>
 </resources>
