@@ -2,6 +2,7 @@ package dev.artium.dukaandost.ui.feature
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -57,85 +58,104 @@ fun ProductDetailScreenView(
     val selectedProduct = remember {
         listOfProducts.find { it.id.toString() == selectedProductId }
     }
-    val configuration = LocalConfiguration.current
-
-    val screenHeight = configuration.screenHeightDp.dp
 
     Scaffold(
         Modifier.background(AppBackground),
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            item { AppBar(navController) }
-            item {
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .heightIn(max = screenHeight / 2 - 16.dp),
-                    model = selectedProduct?.image,
-                    contentDescription = null,
-                    error = painterResource(R.drawable.ic_launcher_background)
-                )
-            }
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = selectedProduct?.title.toString(),
-                        style = Typography.bodyLarge,
-                    )
-                }
-            }
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = selectedProduct?.price.toString().appendCurrencyCode(),
-                        style = Typography.titleLarge
-                    )
-                }
-            }
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = selectedProduct?.rating?.rate.toString(),
-                        style = Typography.bodyLarge
-                    )
-                }
-            }
-            item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = selectedProduct?.category.toString().capitalizeFirstLetter(),
-                        style = Typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+            if (isExpandedScreen) {
+                ShowProductDetailsSideWise(navController, selectedProduct)
+            } else {
+                ShowProductDetailsVertical(navController, selectedProduct)
             }
         }
     }
+}
+
+@Composable
+fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct: ProductModel?) {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+    ) {
+        item { AppBar(navController) }
+        item {
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .heightIn(max = screenHeight / 2 - 16.dp),
+                model = selectedProduct?.image,
+                contentDescription = null,
+                error = painterResource(R.drawable.ic_launcher_background)
+            )
+        }
+        item {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = selectedProduct?.title.toString(),
+                    style = Typography.bodyLarge,
+                )
+            }
+        }
+        item {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = selectedProduct?.price.toString().appendCurrencyCode(),
+                    style = Typography.titleLarge
+                )
+            }
+        }
+        item {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = selectedProduct?.rating?.rate.toString(),
+                    style = Typography.bodyLarge
+                )
+            }
+        }
+        item {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = selectedProduct?.category.toString().capitalizeFirstLetter(),
+                    style = Typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct: ProductModel?) {
+
 }
 
 @Composable
