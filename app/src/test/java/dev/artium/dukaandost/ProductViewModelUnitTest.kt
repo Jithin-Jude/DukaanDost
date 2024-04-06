@@ -33,6 +33,8 @@ class ProductViewModelUnitTest {
     private val savedStateHandle = SavedStateHandle()
     private val repo = ProductRepositoryImpl(productApiService = productApiService, productEntityNetworkMapper = productEntityNetworkMapper)
     private val viewModel = ProductViewModel(repository = repo, savedStateHandle = savedStateHandle)
+
+    // getFilteredList SUCCESS TEST CASE
     @Test
     fun productViewModel_GetFilteredList_NewListHasProductsFromFiltersOnly(){
         // Mock data
@@ -55,5 +57,47 @@ class ProductViewModelUnitTest {
 
         // Assert that the filtered list matches the expected result
         assertEquals(expectedFilteredList, filteredList)
+    }
+
+    // getFilteredList FAIL TEST CASE
+    @Test
+    fun productViewModel_GetFilteredList_NewListHasProductsFromFiltersAndOthers() {
+        // Mock data
+        val listOfProducts = listOf(
+            ProductModel(1, "Product 1", 10.0, "Description 1", "Category A", "", RatingModel(4.5, 100.0)),
+            ProductModel(2, "Product 2", 20.0, "Description 2", "Category B", "", RatingModel(4.0, 200.0)),
+            ProductModel(3, "Product 3", 30.0, "Description 3", "Category C", "", RatingModel(3.5, 150.0)),
+            ProductModel(4, "Product 4", 40.0, "Description 4", "Category D", "", RatingModel(4.8, 180.0))
+        )
+        val filters = listOf("Category A", "Category B")
+
+        // Call the method under test
+        val filteredList = viewModel.getFilteredList(listOfProducts, filters)
+
+        // Check that the filtered list contains products from both filters and others
+        assertFalse(filteredList.all { it.category in filters })
+        assertFalse(filteredList.all { it.category !in filters })
+    }
+
+
+    // getFilteredList BOUNDARY TEST CASE
+    @Test
+    fun productViewModel_GetFilteredList_NewListBoundaryCase() {
+        // Boundary case 1: Empty list of products
+        val emptyListOfProducts = emptyList<ProductModel>()
+        val filters1 = listOf("Category A", "Category B")
+        val filteredList1 = viewModel.getFilteredList(emptyListOfProducts, filters1)
+        assertEquals(emptyListOfProducts, filteredList1)
+
+        // Boundary case 2: Empty list of filters
+        val listOfProducts = listOf(
+            ProductModel(1, "Product 1", 10.0, "Description 1", "Category A", "", RatingModel(4.5, 100.0)),
+            ProductModel(2, "Product 2", 20.0, "Description 2", "Category B", "", RatingModel(4.0, 200.0)),
+            ProductModel(3, "Product 3", 30.0, "Description 3", "Category C", "", RatingModel(3.5, 150.0)),
+            ProductModel(4, "Product 4", 40.0, "Description 4", "Category D", "", RatingModel(4.8, 180.0))
+        )
+        val emptyListOfFilters = emptyList<String>()
+        val filteredList2 = viewModel.getFilteredList(listOfProducts, emptyListOfFilters)
+        assertEquals(listOfProducts, filteredList2)
     }
 }
