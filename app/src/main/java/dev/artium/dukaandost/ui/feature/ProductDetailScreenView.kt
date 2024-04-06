@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -41,10 +40,10 @@ import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
 import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
+import dev.artium.dukaandost.ui.components.RatingView
 import dev.artium.dukaandost.ui.theme.AppBackground
 import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
-import dev.artium.dukaandost.ui.theme.PureBlack
 import dev.artium.dukaandost.ui.theme.TransparentWhite
 import dev.artium.dukaandost.ui.theme.Typography
 
@@ -133,17 +132,13 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
             }
         }
         item {
-            Column(
+            Spacer(modifier = Modifier.height(8.dp))
+            RatingView(
+                selectedProduct, modifier =
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-            ) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = selectedProduct?.rating?.rate.toString(),
-                    style = Typography.bodyLarge
-                )
-            }
+            )
         }
         item {
             Column(
@@ -205,17 +200,13 @@ fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct
                     }
                 }
                 item {
-                    Column(
+                    Spacer(modifier = Modifier.height(8.dp))
+                    RatingView(
+                        selectedProduct, modifier =
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                    ) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = selectedProduct?.rating?.rate.toString(),
-                            style = Typography.bodyLarge
-                        )
-                    }
+                    )
                 }
                 item {
                     Column(

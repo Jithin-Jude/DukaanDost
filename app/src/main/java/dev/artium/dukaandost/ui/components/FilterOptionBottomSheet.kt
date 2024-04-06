@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
@@ -92,7 +93,7 @@ fun FilterOptionItem(
             }
     ) {
         Spacer(modifier = Modifier.height(16.dp))
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = option.capitalizeFirstLetter(), style = Typography.titleLarge)
             Spacer(modifier = Modifier.weight(1f))
             Checkbox(

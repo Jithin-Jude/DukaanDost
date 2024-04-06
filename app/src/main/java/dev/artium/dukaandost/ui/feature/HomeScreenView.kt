@@ -3,6 +3,7 @@ package dev.artium.dukaandost.ui.feature
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -241,7 +242,10 @@ fun ProductListItemView(product: ProductModel, onClickProduct: (product: Product
         Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable {
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() } // This is mandatory
+            ) {
                 onClickProduct(product)
             }) {
         AsyncImage(

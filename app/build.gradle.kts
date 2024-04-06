@@ -91,4 +91,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
+    // Rating Bar
+    implementation("io.github.a914-gowtham:compose-ratingbar:1.2.3")
 }
