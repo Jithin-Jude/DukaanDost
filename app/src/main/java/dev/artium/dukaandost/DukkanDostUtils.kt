@@ -6,7 +6,6 @@ object DukkanDostUtils {
     fun printLog(text: String?) {
         Log.d("DUKAAN_DOST", "DEBUG :=> ${text}")
     }
-
     fun String.capitalizeFirstLetter(): String {
         return if (isEmpty()) {
             this
@@ -15,4 +14,7 @@ object DukkanDostUtils {
         }
     }
 
+    fun String.appendCurrencyCode(): String {
+        return "$$this"
+    }
 }

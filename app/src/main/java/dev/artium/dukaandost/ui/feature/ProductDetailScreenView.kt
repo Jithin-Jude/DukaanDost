@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
+import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.theme.AppBackground
@@ -99,7 +101,10 @@ fun ProductDetailScreenView(
                         .padding(horizontal = 16.dp)
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = selectedProduct?.price.toString(), style = Typography.titleLarge)
+                    Text(
+                        text = selectedProduct?.price.toString().appendCurrencyCode(),
+                        style = Typography.titleLarge
+                    )
                 }
             }
             item {
@@ -122,7 +127,10 @@ fun ProductDetailScreenView(
                         .padding(horizontal = 16.dp)
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = selectedProduct?.category.toString(), style = Typography.bodyLarge)
+                    Text(
+                        text = selectedProduct?.category.toString().capitalizeFirstLetter(),
+                        style = Typography.bodyLarge
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }

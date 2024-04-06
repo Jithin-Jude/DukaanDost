@@ -48,6 +48,7 @@ import coil.compose.AsyncImage
 import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_HIGH_TO_HIGH
 import dev.artium.dukaandost.DukaanDostConstants.SORT_PRICE_LOW_TO_HIGH
 import dev.artium.dukaandost.DukaanDostConstants.SORT_RATING
+import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
 import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.model.ProductModel
@@ -308,11 +309,14 @@ fun ProductItemView(product: ProductModel, onClickProduct: (product: ProductMode
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = product.price.toString(), style = Typography.titleLarge)
+            Text(
+                text = product.price.toString().appendCurrencyCode(),
+                style = Typography.titleLarge
+            )
             Spacer(modifier = Modifier.weight(1f))
             Text(text = product.rating.rate.toString(), style = Typography.bodyLarge)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = product.category, style = Typography.bodyLarge)
+            Text(text = product.category.capitalizeFirstLetter(), style = Typography.bodyLarge)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
