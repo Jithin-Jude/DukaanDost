@@ -116,7 +116,7 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = selectedProduct?.title.toString(),
-                    style = Typography.bodyLarge,
+                    style = Typography.bodyMedium,
                 )
             }
         }
@@ -141,6 +141,19 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
+        }
+        item {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = selectedProduct?.description.toString(),
+                    style = Typography.bodyLarge,
+                )
+            }
         }
         item {
             Column(
@@ -181,7 +194,7 @@ fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = selectedProduct?.title.toString(),
-                            style = Typography.bodyLarge,
+                            style = Typography.bodyMedium,
                         )
                     }
                 }
@@ -206,6 +219,19 @@ fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     )
+                }
+                item {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = selectedProduct?.description.toString(),
+                            style = Typography.bodyLarge,
+                        )
+                    }
                 }
                 item {
                     Column(

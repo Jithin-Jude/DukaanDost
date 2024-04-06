@@ -294,7 +294,7 @@ fun SearchBarWithFilterSort(
             label = { Text("Search") },
             maxLines = 1,
             modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(100),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = DividerGrey,
                 focusedLabelColor = DividerGrey,

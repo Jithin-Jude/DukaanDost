@@ -19,14 +19,14 @@ fun CategoryLabelView(product: ProductModel?) {
     Box(
         modifier = Modifier.border(
             border = BorderStroke(1.dp, DividerGrey),
-            shape = RoundedCornerShape(20.dp)
+            shape = RoundedCornerShape(8.dp)
         )
     ) {
         Text(
             text = product?.category?.capitalizeFirstLetter().toString(),
             style = Typography.labelSmall,
             color = DividerGrey,
-            modifier = Modifier.padding(6.dp)
+            modifier = Modifier.padding(4.dp)
         )
     }
 }
