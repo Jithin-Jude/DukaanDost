@@ -31,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -132,6 +133,9 @@ fun FilterOptionBottomSheet(
     onDismiss: () -> Unit
 ) {
     val modalBottomSheetState = rememberModalBottomSheetState()
+    LaunchedEffect(Unit) {
+        modalBottomSheetState.expand()
+    }
     val filtersToShow = mutableListOf<String>()
     filtersToShow.addAll(listOfCategories)
 
@@ -142,7 +146,7 @@ fun FilterOptionBottomSheet(
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
-        LazyColumn(Modifier.padding(bottom = 100.dp, start = 24.dp, end = 24.dp)) {
+        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
             items(filtersToShow) { filter ->
                 FilterOptionItem(
                     filter,
@@ -181,13 +185,15 @@ fun SortOptionBottomSheet(
 ) {
     val modalBottomSheetState = rememberModalBottomSheetState()
     val filtersToShow = listOf(SORT_RATING, SORT_PRICE_LOW_TO_HIGH, SORT_PRICE_HIGH_TO_HIGH)
-
+    LaunchedEffect(Unit) {
+        modalBottomSheetState.expand()
+    }
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
-        LazyColumn(Modifier.padding(bottom = 100.dp, start = 24.dp, end = 24.dp)) {
+        LazyColumn(Modifier.padding(bottom = 70.dp, start = 24.dp, end = 24.dp)) {
             items(filtersToShow) { filter ->
                 SortOptionItem(filter, onSelectOption = onSelectOption)
             }
