@@ -31,51 +31,16 @@ class ProductViewModelUnitTest {
     private val productApiService = retrofit.create(ProductApiService::class.java)
     private val productEntityNetworkMapper = ProductEntityNetworkMapper()
     private val savedStateHandle = SavedStateHandle()
-    private val repo = ProductRepositoryImpl(
-        productApiService = productApiService,
-        productEntityNetworkMapper = productEntityNetworkMapper
-    )
+    private val repo = ProductRepositoryImpl(productApiService = productApiService, productEntityNetworkMapper = productEntityNetworkMapper)
     private val viewModel = ProductViewModel(repository = repo, savedStateHandle = savedStateHandle)
     @Test
-    fun productViewModel_GetFilteredList_NewListHasProductsFromFiltersOnly() {
+    fun productViewModel_GetFilteredList_NewListHasProductsFromFiltersOnly(){
         // Mock data
         val listOfProducts = listOf(
-            ProductModel(
-                1,
-                "Product 1",
-                10.0,
-                "Description 1",
-                "Category A",
-                "",
-                RatingModel(4.5, 100.0)
-            ),
-            ProductModel(
-                2,
-                "Product 2",
-                20.0,
-                "Description 2",
-                "Category B",
-                "",
-                RatingModel(4.0, 200.0)
-            ),
-            ProductModel(
-                3,
-                "Product 3",
-                30.0,
-                "Description 3",
-                "Category C",
-                "",
-                RatingModel(3.5, 150.0)
-            ),
-            ProductModel(
-                4,
-                "Product 4",
-                40.0,
-                "Description 4",
-                "Category D",
-                "",
-                RatingModel(4.8, 180.0)
-            )
+            ProductModel(1, "Product 1", 10.0, "Description 1", "Category A", "", RatingModel(4.5, 100.0)),
+            ProductModel(2, "Product 2", 20.0, "Description 2", "Category B", "", RatingModel(4.0, 200.0)),
+            ProductModel(3, "Product 3", 30.0, "Description 3", "Category C", "", RatingModel(3.5, 150.0)),
+            ProductModel(4, "Product 4", 40.0, "Description 4", "Category D", "", RatingModel(4.8, 180.0))
         )
         val filters = listOf("Category A", "Category B")
 
@@ -84,24 +49,8 @@ class ProductViewModelUnitTest {
 
         // Expected result: Only products with categories "Category A" and "Category B" should be in the filtered list
         val expectedFilteredList = listOf(
-            ProductModel(
-                1,
-                "Product 1",
-                10.0,
-                "Description 1",
-                "Category A",
-                "",
-                RatingModel(4.5, 100.0)
-            ),
-            ProductModel(
-                2,
-                "Product 2",
-                20.0,
-                "Description 2",
-                "Category B",
-                "",
-                RatingModel(4.0, 200.0)
-            )
+            ProductModel(1, "Product 1", 10.0, "Description 1", "Category A", "", RatingModel(4.5, 100.0)),
+            ProductModel(2, "Product 2", 20.0, "Description 2", "Category B", "", RatingModel(4.0, 200.0))
         )
 
         // Assert that the filtered list matches the expected result
