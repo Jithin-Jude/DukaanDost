@@ -205,6 +205,10 @@ fun FilterOptionItem(
     Column(
         Modifier
             .fillMaxWidth()
+            .clickable {
+                checkedState.value = !checkedState.value
+                onSelectOption(option, checkedState.value)
+            }
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Row {
@@ -213,7 +217,6 @@ fun FilterOptionItem(
             Checkbox(
                 checked = checkedState.value,
                 onCheckedChange = { isChecked ->
-                    // Update the state when the checkbox is clicked
                     checkedState.value = isChecked
                     onSelectOption(option, isChecked)
                 }
