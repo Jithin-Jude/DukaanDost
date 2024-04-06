@@ -1,6 +1,7 @@
-package dev.artium.dukaandost.model
+package dev.artium.dukaandost.domain
 
-import dev.artium.dukaandost.domain.EntityMapper
+import dev.artium.dukaandost.model.ProductModel
+import dev.artium.dukaandost.model.RatingModel
 import dev.artium.dukaandost.network.ProductResponse
 import javax.inject.Inject
 

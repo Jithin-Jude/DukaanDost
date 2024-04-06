@@ -1,8 +1,7 @@
 package dev.artium.dukaandost.network
 
 import dev.artium.dukaandost.domain.DataState
-import dev.artium.dukaandost.model.ProductEntityNetworkMapper
-import kotlinx.coroutines.flow.Flow
+import dev.artium.dukaandost.domain.ProductEntityNetworkMapper
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 

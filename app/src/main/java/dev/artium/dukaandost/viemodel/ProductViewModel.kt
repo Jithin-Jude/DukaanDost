@@ -23,8 +23,7 @@ import javax.inject.Inject
 class ProductViewModel @Inject constructor(
     private val repository: ProductRepository,
     private val savedStateHandle: SavedStateHandle
-) :
-    ViewModel() {
+) : ViewModel() {
     companion object {
         private const val FILTER_KEY = "selected_filter"
         private const val SEARCH_TERM = "search_term"
