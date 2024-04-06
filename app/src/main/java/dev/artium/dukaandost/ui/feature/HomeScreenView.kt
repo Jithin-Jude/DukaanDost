@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -55,6 +56,7 @@ import coil.compose.AsyncImage
 import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
 import dev.artium.dukaandost.DukkanDostUtils.capitalizeFirstLetter
 import dev.artium.dukaandost.MainActivity
+import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.components.FilterOptionBottomSheet
 import dev.artium.dukaandost.ui.components.SortOptionBottomSheet
@@ -208,6 +210,7 @@ fun ProductGridItemView(product: ProductModel, onClickProduct: (product: Product
                     modifier = Modifier.size(100.dp),
                     model = product.image,
                     contentDescription = null,
+                    error = painterResource(R.drawable.ic_placeholed_shopping_bag)
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -245,6 +248,7 @@ fun ProductListItemView(product: ProductModel, onClickProduct: (product: Product
             modifier = Modifier.size(100.dp),
             model = product.image,
             contentDescription = null,
+            error = painterResource(R.drawable.ic_placeholed_shopping_bag)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {

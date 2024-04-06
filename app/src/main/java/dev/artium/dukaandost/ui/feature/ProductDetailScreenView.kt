@@ -103,7 +103,7 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
                     .heightIn(max = screenHeight / 2 - 16.dp),
                 model = selectedProduct?.image,
                 contentDescription = null,
-                error = painterResource(R.drawable.ic_launcher_background)
+                error = painterResource(R.drawable.ic_placeholed_shopping_bag)
             )
         }
         item {
@@ -173,7 +173,7 @@ fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct
                     .aspectRatio(1f),
                 model = selectedProduct?.image,
                 contentDescription = null,
-                error = painterResource(R.drawable.ic_launcher_background)
+                error = painterResource(R.drawable.ic_placeholed_shopping_bag)
             )
             Spacer(modifier = Modifier.width(8.dp))
             LazyColumn(
