@@ -149,7 +149,7 @@ class ProductViewModel @Inject constructor(
         )
     }
 
-    private fun getFilteredList(
+    fun getFilteredList(
         listOfProducts: List<ProductModel>,
         filters: List<String>
     ): List<ProductModel> {
@@ -166,7 +166,7 @@ class ProductViewModel @Inject constructor(
         return productListWithFilter
     }
 
-    private fun getProductListWithSearchTerm(
+    fun getProductListWithSearchTerm(
         listOfProducts: List<ProductModel>,
         searchTerm: String
     ): List<ProductModel> {
@@ -182,7 +182,7 @@ class ProductViewModel @Inject constructor(
         return productListContainsSearchTerm
     }
 
-    private fun getSortedProductList(
+    fun getSortedProductList(
         listOfProducts: List<ProductModel>,
         sortOption: String
     ): List<ProductModel> {
