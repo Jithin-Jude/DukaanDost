@@ -22,10 +22,84 @@ Notes
 - App text color has a glitch & was not displaying in one of my POCO C31 device. And app was working fine on all other devices & emulators. The issue was with forced dark theming in Xiaomi/Poco devices. Finally able to resolve it by manipulating `forceDarkAllowed` in app theme.
 
 - App was not performing well in case of poor network (slow loading & data lose). Solved this issue by enabling OkHttp caching.
-### Demo phone:
+### Demo phone: [download APK here](https://drive.google.com/file/d/1lzTGRhr5rM8cwTqY0STvRlUtXeJPKFOd/view?usp=sharing "Link to release APK")
 ![](https://github.com/Jithin-Jude/DukaanDost/blob/0d8ce17989202fae49c2b4d561ec990543216b8d/sample_images/dukaan_dost_phone_gif.gif)
-### Demo tablet(emulator):
+### Demo tablet (emulator):
 ![](https://github.com/Jithin-Jude/DukaanDost/blob/4e7943cebcafb02742283d58985f66883da7c2ca/sample_images/dukaan_dost_tablet_gif.gif)
+
+### Important Code snippets:
+WindowMetricsCalculator:
+```kt
+val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
+val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+```
+
+Filter logic:
+```kt
+    fun getFilteredList(
+        listOfProducts: List<ProductModel>,
+        filters: List<String>
+    ): List<ProductModel> {
+        val productListWithFilter: List<ProductModel>
+        if (filters.isNotEmpty()) {
+            productListWithFilter = listOfProducts.filter { product ->
+                filters.any { filter ->
+                    product.category == filter
+                }
+            }
+        } else {
+            productListWithFilter = listOfProducts
+        }
+        return productListWithFilter
+    }
+```
+
+Search logic:
+```kt
+    fun getProductListWithSearchTerm(
+        listOfProducts: List<ProductModel>,
+        searchTerm: String
+    ): List<ProductModel> {
+        val productListContainsSearchTerm: List<ProductModel>
+        if (searchTerm.isNotBlank()) {
+            productListContainsSearchTerm = listOfProducts.filter {
+                it.title.lowercase().contains(searchTerm.lowercase()) ||
+                        it.category.lowercase().contains(searchTerm.lowercase())
+            }
+        } else {
+            productListContainsSearchTerm = listOfProducts
+        }
+        return productListContainsSearchTerm
+    }
+```
+
+Sort logic:
+```kt
+fun getSortedProductList(
+        listOfProducts: List<ProductModel>,
+        sortOption: String
+    ): List<ProductModel> {
+        val sortedIntersectionList: List<ProductModel>
+        when (sortOption) {
+            SORT_RATING -> {
+                sortedIntersectionList = listOfProducts.sortedByDescending { it.rating.rate }
+            }
+
+            SORT_PRICE_LOW_TO_HIGH -> {
+                sortedIntersectionList = listOfProducts.sortedBy { it.price }
+            }
+
+            SORT_PRICE_HIGH_TO_HIGH -> {
+                sortedIntersectionList = listOfProducts.sortedByDescending { it.price }
+            }
+
+            else -> {
+                sortedIntersectionList = listOfProducts
+            }
+        }
+        return sortedIntersectionList
+    }
+```
 
 ### 3rd party libraries used:
 [Coil for image loading](https://coil-kt.github.io/coil/)
