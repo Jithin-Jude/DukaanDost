@@ -100,6 +100,15 @@ fun getSortedProductList(
         return sortedIntersectionList
     }
 ```
+### Business logic test coverage:
+Unit test was written with the help of the JUnit4 testing framework: `ProductViewModelUnitTest.kt`
+![](https://github.com/Jithin-Jude/DukaanDost/blob/f5c6b3aecfb88e7c087e2db689f6e52320ec25d7/sample_images/test_coverage.png)
+
+### Future improvements that can be think of:
+The project can be developed into a complete E-commerce app.
+1. Login for users: Enable login for users & provide cart, whishlist facility. This can be achive by integration Google auth or OTP via firebase.
+2. Paginated data: Pagination can be integrate in get products API call with the help of Paging3 library & serve a large quantity of items.
+3. Unit test coverage also can be improved by adding more test case scenarios (success, fail & boundary cases).
 
 ### 3rd party libraries used:
 [Coil for image loading](https://coil-kt.github.io/coil/)
