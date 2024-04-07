@@ -110,6 +110,8 @@ The project can be developed into a complete E-commerce app.
 2. Paginated data: Pagination can be integrate in get products API call with the help of Paging3 library & serve a large quantity of items.
 3. Unit test coverage also can be improved by adding more test case scenarios (success, fail & boundary cases).
 
+<i>Suggestions and improvements are welcome</i>
+
 ### 3rd party libraries used:
 [Coil for image loading](https://coil-kt.github.io/coil/)
 
