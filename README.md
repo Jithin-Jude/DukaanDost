@@ -1,4 +1,4 @@
-## Dukaan Dost
+## Dukaan Dost: A simple shopping/e-commerce app
 A simple shopping/e-commerce app which will list products across different caregories. Users can Search, Filter based on categories, Sort based on different parameters.
 App will support phones & tablets above Android Lolipop (SDK 21). App is developed in MVVM architecture.
 
