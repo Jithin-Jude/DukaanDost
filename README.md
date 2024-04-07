@@ -1,4 +1,4 @@
-## [Dukaan Dost: A simple shopping/e-commerce app](https://drive.google.com/file/d/1lzTGRhr5rM8cwTqY0STvRlUtXeJPKFOd/view?usp=sharing "Link to release APK")
+## [Dukaan Dost: A simple shopping/e-commerce app](https://portal.testapp.io/apps/install/PeKZ1NbRgpV3P "Link to release APK")
 A simple shopping/e-commerce app which will list products across different caregories. Users can Search, Filter based on categories, Sort based on different parameters.
 App will support phones & tablets above Android Lolipop (SDK 21). App is developed in MVVM architecture.
 
@@ -22,7 +22,7 @@ Notes
 - App text color has a glitch & was not displaying in one of my POCO C31 device. And app was working fine on all other devices & emulators. The issue was with forced dark theming in Xiaomi/Poco devices. Finally able to resolve it by manipulating `forceDarkAllowed` in app theme.
 
 - App was not performing well in case of poor network (slow loading & data lose). Solved this issue by enabling OkHttp caching.
-### Demo phone: [download APK here](https://drive.google.com/file/d/1lzTGRhr5rM8cwTqY0STvRlUtXeJPKFOd/view?usp=sharing "Link to release APK")
+### Demo phone: [download APK here](https://portal.testapp.io/apps/install/PeKZ1NbRgpV3P "Link to release APK")
 ![](https://github.com/Jithin-Jude/DukaanDost/blob/0d8ce17989202fae49c2b4d561ec990543216b8d/sample_images/dukaan_dost_phone_gif.gif)
 ### Demo tablet (emulator):
 ![](https://github.com/Jithin-Jude/DukaanDost/blob/4e7943cebcafb02742283d58985f66883da7c2ca/sample_images/dukaan_dost_tablet_gif.gif)
