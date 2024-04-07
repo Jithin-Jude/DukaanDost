@@ -23,6 +23,9 @@ Notes
 
 - App was not performing well in case of poor network (slow loading & data lose). Solved this issue by enabling OkHttp caching.
 
+![](https://github.com/Jithin-Jude/DukaanDost/blob/0d8ce17989202fae49c2b4d561ec990543216b8d/sample_images/dukaan_dost_phone_gif.gif)
+![](https://github.com/Jithin-Jude/DukaanDost/blob/4e7943cebcafb02742283d58985f66883da7c2ca/sample_images/dukaan_dost_tablet_gif.gif)
+
 ### 3rd party libraries used:
 [Coil for image loading](https://coil-kt.github.io/coil/)
 
