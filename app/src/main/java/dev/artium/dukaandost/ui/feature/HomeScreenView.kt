@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -55,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
+import dev.artium.dukaandost.DukkanDostUtils.networkImageLoaderWithCache
 import dev.artium.dukaandost.MainActivity
 import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
@@ -199,6 +201,8 @@ fun ProductListView(
 
 @Composable
 fun ProductGridItemView(product: ProductModel, onClickProduct: (product: ProductModel) -> Unit) {
+    val context = LocalContext.current
+
     Box(
         Modifier
             .padding(8.dp)
@@ -209,9 +213,8 @@ fun ProductGridItemView(product: ProductModel, onClickProduct: (product: Product
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 AsyncImage(
                     modifier = Modifier.size(100.dp),
-                    model = product.image,
+                    model = product.image.networkImageLoaderWithCache(context = context, R.drawable.ic_placeholed_shopping_bag),
                     contentDescription = null,
-                    error = painterResource(R.drawable.ic_placeholed_shopping_bag)
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -237,6 +240,8 @@ fun ProductGridItemView(product: ProductModel, onClickProduct: (product: Product
 
 @Composable
 fun ProductListItemView(product: ProductModel, onClickProduct: (product: ProductModel) -> Unit) {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -249,9 +254,8 @@ fun ProductListItemView(product: ProductModel, onClickProduct: (product: Product
             }) {
         AsyncImage(
             modifier = Modifier.size(100.dp),
-            model = product.image,
+            model = product.image.networkImageLoaderWithCache(context = context, R.drawable.ic_placeholed_shopping_bag),
             contentDescription = null,
-            error = painterResource(R.drawable.ic_placeholed_shopping_bag)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {

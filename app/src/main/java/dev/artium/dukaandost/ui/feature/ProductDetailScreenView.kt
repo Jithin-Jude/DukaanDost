@@ -1,8 +1,6 @@
 package dev.artium.dukaandost.ui.feature
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,13 +30,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import dev.artium.dukaandost.DukkanDostUtils.appendCurrencyCode
+import dev.artium.dukaandost.DukkanDostUtils.networkImageLoaderWithCache
 import dev.artium.dukaandost.R
 import dev.artium.dukaandost.model.ProductModel
 import dev.artium.dukaandost.ui.components.CategoryLabelView
@@ -48,6 +50,7 @@ import dev.artium.dukaandost.ui.theme.DividerGrey
 import dev.artium.dukaandost.ui.theme.DukaanDostTheme
 import dev.artium.dukaandost.ui.theme.TransparentWhite
 import dev.artium.dukaandost.ui.theme.Typography
+import kotlinx.coroutines.Dispatchers
 
 
 @Preview(showBackground = true)
@@ -88,6 +91,7 @@ fun ProductDetailScreenView(
 
 @Composable
 fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct: ProductModel?) {
+    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -102,9 +106,8 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .heightIn(max = screenHeight / 2 - 16.dp),
-                model = selectedProduct?.image,
+                model = selectedProduct?.image?.networkImageLoaderWithCache(context = context, R.drawable.ic_placeholed_shopping_bag),
                 contentDescription = null,
-                error = painterResource(R.drawable.ic_placeholed_shopping_bag)
             )
         }
         item {
@@ -171,6 +174,7 @@ fun ShowProductDetailsVertical(navController: NavHostController, selectedProduct
 
 @Composable
 fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct: ProductModel?) {
+    val context = LocalContext.current
 
     Box(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -178,9 +182,8 @@ fun ShowProductDetailsSideWise(navController: NavHostController, selectedProduct
                 modifier = Modifier
                     .fillMaxHeight()
                     .aspectRatio(1f),
-                model = selectedProduct?.image,
+                model = selectedProduct?.image?.networkImageLoaderWithCache(context = context, R.drawable.ic_placeholed_shopping_bag),
                 contentDescription = null,
-                error = painterResource(R.drawable.ic_placeholed_shopping_bag)
             )
             Spacer(modifier = Modifier.width(8.dp))
             LazyColumn(
