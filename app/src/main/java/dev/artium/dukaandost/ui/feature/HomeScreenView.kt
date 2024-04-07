@@ -290,7 +290,10 @@ fun SearchBarWithFilterSort(
     Row(modifier = modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
             value = searchTerm.value,
-            onValueChange = { searchTerm.value = it },
+            onValueChange = {
+                searchTerm.value = it
+                onSendClick(searchTerm.value)
+                            },
             label = { Text("Search") },
             maxLines = 1,
             modifier = Modifier.weight(1f),
@@ -318,10 +321,9 @@ fun SearchBarWithFilterSort(
                 }
             },
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Search
+                imeAction = ImeAction.Done
             ),
-            keyboardActions = KeyboardActions(onSearch = {
-                onSendClick(searchTerm.value)
+            keyboardActions = KeyboardActions(onDone = {
                 keyboardController?.hide()
             })
         )

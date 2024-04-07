@@ -173,8 +173,8 @@ class ProductViewModel @Inject constructor(
         val productListContainsSearchTerm: List<ProductModel>
         if (searchTerm.isNotBlank()) {
             productListContainsSearchTerm = listOfProducts.filter {
-                it.title.lowercase().contains(searchTerm) ||
-                        it.category.lowercase().contains(searchTerm)
+                it.title.lowercase().contains(searchTerm.lowercase()) ||
+                        it.category.lowercase().contains(searchTerm.lowercase())
             }
         } else {
             productListContainsSearchTerm = listOfProducts
