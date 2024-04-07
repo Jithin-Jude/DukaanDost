@@ -16,7 +16,7 @@ Notes
 
 2. <b>Caching of image with Coil library & use of placeholders:</b> Use of placeholders enhance UI on loading images for the first time while caching ensure faster image loading for subsequent app sessions.
 
-3. <b>Avoid unnessary API calls:</b> Since it's able to get all the product details & categories from `https://fakestoreapi.com/products` & `https://fakestoreapi.com/products/categories` respectively, I'm able to reduce the number of API calls and able to make use of already available data. This also helps to achive expected result with less development efforts.
+3. <b>Avoid unnessary API calls:</b> <ins>Since it's able to get all the product details & categories from `https://fakestoreapi.com/products` & `https://fakestoreapi.com/products/categories` respectively, I'm able to reduce the number of API calls and able to make use of already available data. This also helps to achive expected result with less development efforts.</ins>
 
 ### Challenges faced during development & solutions arrived:
 - App text color has a glitch & was not displaying in one of my POCO C31 device. And app was working fine on all other devices & emulators. The issue was with forced dark theming in Xiaomi/Poco devices. Finally able to resolve it by manipulating `forceDarkAllowed` in app theme.
