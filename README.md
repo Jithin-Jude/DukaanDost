@@ -9,19 +9,19 @@ Notes
 
 2. <b>Data layer:</b> Data layer of this application is developed by leveraging `OkHttp`, `Retrofit`, `Dagger-Hilt`.
 
-3. <b>State Management:</b> State across app is handled using `ProductViewModel` & State holders in Compose.
+3. <b>State Management:</b> State across app is handled using `ProductViewModel`, State holder in Compose & [SavedStateHandle](https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-savedstate#:~:text=Important%3A%20the,rememberSaveable%20in%20Compose.) class.
 
 ### Things implemented to reduce network traffic & improve app performance:
 1. <b>OkHttp caching:</b> Once the data is fetched for the first time, app will be able to show data in case of no or poor network conditions. This also helps to reduce network traffic since it getting the cached data. The data will cache for 10 days & this can be adjusted.
 
 2. <b>Caching of image with Coil library & use of placeholders:</b> Use of placeholders enhance UI on loading images for the first time while caching ensure faster image loading for subsequent app sessions.
 
-3. <b>Avoid unnessary API calls:</b> <ins>Since it's able to get all the product details & categories from `https://fakestoreapi.com/products` & `https://fakestoreapi.com/products/categories` respectively, I'm able to reduce the number of API calls and able to make use of already available data. This also helps to achive expected result with less development efforts.</ins>
+3. <b>Avoid unnessary API calls:</b> <ins>Since it's able to get all the product details & categories from `https://fakestoreapi.com/products` & `https://fakestoreapi.com/products/categories` APIs respectively, I'm able to reduce the number of API calls and able to make use of already available data. This also helps to achive expected result with less development efforts.</ins>
 
 ### Challenges faced during development & solutions arrived:
 - App text color has a glitch & was not displaying in one of my POCO C31 device. And app was working fine on all other devices & emulators. The issue was with forced dark theming in Xiaomi/Poco devices. Finally able to resolve it by manipulating `forceDarkAllowed` in app theme.
 
-- App was not performing well in case of poor network (slow loading & data lose). Solved this issue by enabling OkHttp caching.
+- App was not performing well in case of poor network (slow loading & data loss). Solved this issue by enabling OkHttp caching.
 ### Demo phone: [download APK here](https://portal.testapp.io/apps/install/PeKZ1NbRgpV3P "Link to release APK")
 ![](https://github.com/Jithin-Jude/DukaanDost/blob/0d8ce17989202fae49c2b4d561ec990543216b8d/sample_images/dukaan_dost_phone_gif.gif)
 ### Demo tablet (emulator):
@@ -100,6 +100,12 @@ fun getSortedProductList(
         return sortedIntersectionList
     }
 ```
+### Why "No products found!" showing sometimes?
+This can happen because:
+1. No products match the search term.
+2. When a filter is applied, search happens only in that category.
+3. Network issue & data is not cached.
+
 ### Business logic test coverage:
 Unit test was written with the help of the JUnit4 testing framework: `ProductViewModelUnitTest.kt`
 ![](https://github.com/Jithin-Jude/DukaanDost/blob/f5c6b3aecfb88e7c087e2db689f6e52320ec25d7/sample_images/test_coverage.png)
