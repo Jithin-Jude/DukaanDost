@@ -110,6 +110,14 @@ This can happen because:
 Unit test was written with the help of the JUnit4 testing framework: `ProductViewModelUnitTest.kt`
 ![](https://github.com/Jithin-Jude/DukaanDost/blob/f5c6b3aecfb88e7c087e2db689f6e52320ec25d7/sample_images/test_coverage.png)
 
+### Test cases explored:
+1. Tested across devices from Lollipop (SDK 21) to Android 14 (with the help of emulators).
+2. Tested in Pixel tablet (Android 14, emulator).
+3. Tested in Android 10 & Android 13 real devices (phones)
+4. Tried state management on both portrait & landscape orientations.
+5. Tested different combinations of filter, search & sorting options.
+6. Tested on poor & no network conditions.
+
 ### Future improvements that can be think of:
 The project can be developed into a complete E-commerce app.
 1. Login for users: Enable login for users & provide cart, whishlist facility. This can be achive by integration Google auth or OTP via firebase.
